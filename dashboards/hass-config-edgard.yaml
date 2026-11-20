@@ -123,7 +123,6 @@ button_card_templates:
       - grid-template-rows: auto repeat(2, min-content)
       - gap: 1.3%
       - align-items: start
-      - will-change: transform
       name:
       - justify-self: start
       - line-height: 121%
@@ -240,7 +239,8 @@ button_card_templates:
     state_display: "[[[\n  if (entity) {\n      return variables.state === 'home'\n          ? variables.translate_home\n\
       \          : variables.state === 'not_home'\n              ? variables.translate_not_home\n              : variables.state;\n\
       \  }\n  return variables.translate_unknown;\n]]]"
-    triggers_update: all
+    triggers_update:
+    - sensor.time_date
     tap_action:
       action: more-info
     styles:
@@ -302,7 +302,13 @@ button_card_templates:
     - base
     - base_media
     - icon_play_pause
-    triggers_update: all
+    triggers_update:
+    - media_player.tv_sala_androidtv
+    - media_player.sala_echo_show_8
+    - media_player.suite_echo_dot_suite
+    - media_player.google_home_escritorio
+    - media_player.tv_samsung_suite
+    - media_player.todo_lugar
     variables:
       active_player: "[[[\n  const players = [\n    'media_player.tv_sala_androidtv',\n    'media_player.sala_echo_show_8',\n\
         \    'media_player.suite_echo_dot_suite',\n    'media_player.google_home_escritorio',\n    'media_player.tv_samsung_suite',\n\
@@ -341,35 +347,68 @@ button_card_templates:
       - padding: 5.75% 5.25% 0 5.75%
       - border-radius: calc(var(--button-card-border-radius, 10%) / 2)
       - background: rgba(115, 115, 115, 0.25) center center/cover no-repeat
-      - background-image: "[[[\n  const pic = variables.entity_picture;\n  if (pic) return `linear-gradient(0deg, rgba(0,0,0,0.72)\
-          \ 0%, rgba(0,0,0,0.08) 55%, rgba(0,0,0,0.2) 100%), url(\"${pic}\")`;\n  if (variables.state_on) return 'radial-gradient(circle\
-          \ at 20% 20%, rgba(49,130,183,0.42), rgba(26,34,38,0.88))';\n  return 'radial-gradient(circle at 80% 20%, rgba(82,102,112,0.28),\
-          \ rgba(28,32,34,0.65))';\n]]]"
+      - background-image: "[[[\n  const pic = variables.entity_picture;\n  if (pic) return `linear-gradient(0deg, rgba(16,20,22,0.88)\
+          \ 0%, rgba(16,20,22,0.52) 28%, rgba(0,0,0,0.08) 55%, rgba(0,0,0,0.2) 100%), url(\"${pic}\")`;\n  if (variables.state_on)\
+          \ return 'linear-gradient(0deg, rgba(16,20,22,0.72) 0%, rgba(16,20,22,0.25) 32%, transparent 55%), radial-gradient(circle\
+          \ at 20% 20%, rgba(49,130,183,0.42), rgba(26,34,38,0.88))';\n  return 'linear-gradient(0deg, rgba(16,20,22,0.68)\
+          \ 0%, rgba(16,20,22,0.22) 32%, transparent 55%), radial-gradient(circle at 80% 20%, rgba(82,102,112,0.28), rgba(28,32,34,0.65))';\n\
+          ]]]"
       - color: '#efefef'
       - text-shadow: 1px 1px 5px rgba(18, 22, 23, 0.9)
       custom_fields:
         icon:
         - width: 28%
         - fill: '[[[ return variables.state_on ? ''rgba(255, 255, 255, 0.85)'' : ''#9da0a2''; ]]]'
-        blur_overlay:
-        - display: block
-        - position: absolute
-        - width: 103.1%
-        - height: 103.1%
-        - clip-path: inset(74.5% 1.45% 1.45% 1.45% round 0 0 5% 5%)
-        - backdrop-filter: var(--blur-intensity)
-        - -webkit-backdrop-filter: var(--blur-intensity)
-        - left: -1.5%
-        - bottom: -1.6%
-    custom_fields:
-      blur_overlay: "[[[\n  setTimeout(() => {\n      let elt = this.shadowRoot,\n          card = elt?.getElementById('card'),\n\
-        \          container = elt?.getElementById('container'),\n          blur_overlay = elt?.getElementById('blur_overlay');\n\
-        \      if (elt && card && container && blur_overlay) {\n          card.insertBefore(blur_overlay, container);\n  \
-        \    }\n  }, 0);\n  return ' ';\n]]]"
   sidebar:
     show_state: false
     show_icon: false
-    triggers_update: all
+    triggers_update:
+    - sensor.time_date
+    - weather.openweathermap
+    - light.sala_central
+    - light.sala_led_sofa
+    - light.sala_spot_sofa
+    - light.sala_mesa_jantar
+    - light.sala_entrada
+    - light.sala_banh_social
+    - light.cozinha_central
+    - light.cozinha_bancada
+    - light.cozinha_lavanderia
+    - light.escritorio_spot_escritorio_led
+    - light.suite_ventilador
+    - light.suite_closet
+    - light.quarto_suite_banheiro_espelho
+    - light.hall_light_switch_top
+    - light.hall_light_switch_bottom
+    - climate.escritorio_ar_condicionado
+    - switch.suite_ac
+    - switch.sala_ac
+    - fan.suite_ventilador_2
+    - media_player.tv_sala_androidtv
+    - media_player.tv_samsung_suite
+    - switch.escritorio_computador
+    - switch.escritorio_monitor
+    - vacuum.escritorio_eufy_x10_pro
+    - lock.kuanttum_delta_pro_operate_lock
+    - input_boolean.modo_visitas
+    - input_boolean.faxina
+    - input_boolean.vacation_mode
+    - sensor.sala_varanda_escritorio_power
+    - sensor.daily_energy
+    - sensor.monthly_energy_cost
+    - sensor.0xa4c1388ad4a9a0b6_battery
+    - sensor.0xa4c13818e2a13578_battery
+    - sensor.0xa4c138f397b856f0_battery
+    - sensor.0x00158d00048740a5_battery
+    - sensor.0x00158d000244775f_battery
+    - sensor.0x00158d0005bd5c27_battery
+    - sensor.0x00158d0004110926_battery
+    - sensor.0x00158d00041d46d5_battery
+    - sensor.0x00158d00045b039a_battery
+    - sensor.0x00158d00047bba26_battery
+    - sensor.0x00158d00054d601a_battery
+    - sensor.0x00158d00045d75bf_battery
+    - sensor.0x00158d00044ea7ba_battery
     tap_action:
       action: none
     name: "[[[\n  const now = new Date();\n  const hh = String(now.getHours()).padStart(2, '0');\n  const mm = String(now.getMinutes()).padStart(2,\
@@ -391,30 +430,35 @@ button_card_templates:
       \ || '1 luz');\n  } else if (lightsOn.length > 1) {\n    activeParts.push(`${lightsOn.length} luzes`);\n  }\n  activeParts\
       \ = activeParts.concat(devsOn);\n  let activeStr = activeParts.length === 0\n    ? `<font color=\"#6a7377\">Tudo desligado</font>`\n\
       \    : activeParts.length === 1\n      ? `${activeParts[0]} ligado`\n      : `${activeParts.slice(0, -1).join(', ')}\
-      \ e ${activeParts[activeParts.length - 1]} ligados`;\n\n  // Weather\n  const w = states['weather.openweathermap'];\n\
-      \  const condMap = {\n    'sunny': 'Ensolarado', 'clear-night': 'Céu limpo', 'cloudy': 'Nublado',\n    'partlycloudy':\
-      \ 'Parc. nublado', 'rainy': 'Chuva', 'pouring': 'Chuva forte',\n    'lightning-rainy': 'Tempestade', 'fog': 'Neblina',\
-      \ 'windy': 'Ventando'\n  };\n  let weatherStr = '';\n  if (w && w.state !== 'unavailable') {\n    const t = Math.round(w.attributes.temperature);\n\
+      \ e ${activeParts[activeParts.length - 1]} ligados`;\n\n  const w = states['weather.openweathermap'];\n  const condMap\
+      \ = {\n    'sunny': 'Ensolarado', 'clear-night': 'Céu limpo', 'cloudy': 'Nublado',\n    'partlycloudy': 'Parc. nublado',\
+      \ 'rainy': 'Chuva', 'pouring': 'Chuva forte',\n    'lightning-rainy': 'Tempestade', 'fog': 'Neblina', 'windy': 'Ventando'\n\
+      \  };\n  let weatherStr = '';\n  if (w && w.state !== 'unavailable') {\n    const t = Math.round(w.attributes.temperature);\n\
       \    const feels = w.attributes.apparent_temperature != null ? Math.round(w.attributes.apparent_temperature) : t;\n\
       \    const hum = w.attributes.humidity;\n    const cond = condMap[w.state] || w.state;\n    weatherStr = `${cond} ·\
-      \ ${t}°C (sensação ${feels}°C) · ${hum}%`;\n  }\n\n  // Vacuum\n  const vac = states['vacuum.escritorio_eufy_x10_pro'];\n\
-      \  let vacStr = '';\n  if (vac?.state === 'cleaning') vacStr = '<b>\U0001F916 Eufy X10 aspirando</b>';\n  else if (vac?.state\
-      \ === 'returning') vacStr = '<b>\U0001F916 Eufy X10 voltando à base</b>';\n\n  // Modes / Lock\n  let modeParts = [];\n\
-      \  if (states['lock.kuanttum_delta_pro_operate_lock']?.state === 'unlocked') modeParts.push('\U0001F513 Porta destrancada');\n\
-      \  if (states['input_boolean.modo_visitas']?.state === 'on') modeParts.push('\U0001F465 Modo Visitas');\n  if (states['input_boolean.faxina']?.state\
-      \ === 'on') modeParts.push('\U0001F9F9 Modo Faxina');\n  if (states['input_boolean.vacation_mode']?.state === 'on')\
-      \ modeParts.push('✈️ Modo Férias');\n  const modeStr = modeParts.length ? `<b>${modeParts.join(' · ')}</b>` : '';\n\n\
-      \  // Energy\n  const pwr = parseFloat(states['sensor.sala_varanda_escritorio_power']?.state);\n  const cost = parseFloat(states['sensor.monthly_energy_cost']?.state);\n\
-      \  const daily = parseFloat(states['sensor.daily_energy']?.state);\n  let energyStr = '';\n  if (!Number.isNaN(pwr))\
-      \ {\n    energyStr = `⚡ ${Math.round(pwr)} W`;\n    if (!Number.isNaN(daily)) energyStr += ` · ${daily.toFixed(1)} kWh\
-      \ hoje`;\n    if (!Number.isNaN(cost)) energyStr += ` · R$ ${Math.round(cost)}/mês`;\n  }\n\n  // Low battery (<= 15%)\n\
-      \  const lowBat = [];\n  for (const [eid, st] of Object.entries(states)) {\n    if (eid.startsWith('sensor.0x') && eid.endsWith('_battery'))\
-      \ {\n      const v = parseFloat(st.state);\n      if (!Number.isNaN(v) && v <= 15) {\n        const nm = (st.attributes?.friendly_name\
-      \ || eid).replace(/ Battery$/i, '');\n        lowBat.push(`${nm} ${Math.round(v)}%`);\n      }\n    }\n  }\n  const\
-      \ batStr = lowBat.length ? `⚠️ Bateria baixa: ${lowBat.slice(0, 3).join(', ')}` : '';\n\n  const blocks = [\n    `<span\
-      \ class=\"time\">${hh}<span class=\"time-colon\">:</span>${mm}</span>`,\n    `<font color=\"#6a7377\"><b>${dateStr}</b></font>`,\n\
-      \    `<b>${greet}</b>`,\n    `<b>${activeStr}</b>`,\n    weatherStr,\n    vacStr,\n    modeStr,\n    energyStr,\n  \
-      \  batStr\n  ].filter(Boolean);\n\n  return blocks.map(b => `<p>${b}</p>`).join('');\n]]]"
+      \ ${t}°C (sensação ${feels}°C) · ${hum}%`;\n  }\n\n  const vac = states['vacuum.escritorio_eufy_x10_pro'];\n  let vacStr\
+      \ = '';\n  if (vac?.state === 'cleaning') vacStr = '<b>\U0001F916 Eufy X10 aspirando</b>';\n  else if (vac?.state ===\
+      \ 'returning') vacStr = '<b>\U0001F916 Eufy X10 voltando à base</b>';\n\n  let modeParts = [];\n  if (states['lock.kuanttum_delta_pro_operate_lock']?.state\
+      \ === 'unlocked') modeParts.push('\U0001F513 Porta destrancada');\n  if (states['input_boolean.modo_visitas']?.state\
+      \ === 'on') modeParts.push('\U0001F465 Modo Visitas');\n  if (states['input_boolean.faxina']?.state === 'on') modeParts.push('\U0001F9F9\
+      \ Modo Faxina');\n  if (states['input_boolean.vacation_mode']?.state === 'on') modeParts.push('✈️ Modo Férias');\n \
+      \ const modeStr = modeParts.length ? `<b>${modeParts.join(' · ')}</b>` : '';\n\n  const pwr = parseFloat(states['sensor.sala_varanda_escritorio_power']?.state);\n\
+      \  const cost = parseFloat(states['sensor.monthly_energy_cost']?.state);\n  const daily = parseFloat(states['sensor.daily_energy']?.state);\n\
+      \  let energyStr = '';\n  if (!Number.isNaN(pwr)) {\n    energyStr = `⚡ ${Math.round(pwr)} W`;\n    if (!Number.isNaN(daily))\
+      \ energyStr += ` · ${daily.toFixed(1)} kWh hoje`;\n    if (!Number.isNaN(cost)) energyStr += ` · R$ ${Math.round(cost)}/mês`;\n\
+      \  }\n\n  const batSensors = [\n    ['sensor.0xa4c1388ad4a9a0b6_battery', 'Suíte'],\n    ['sensor.0xa4c13818e2a13578_battery',\
+      \ 'Escritório'],\n    ['sensor.0xa4c138f397b856f0_battery', 'Cozinha'],\n    ['sensor.0x00158d00048740a5_battery', 'Varanda'],\n\
+      \    ['sensor.0x00158d000244775f_battery', 'Banh. Social'],\n    ['sensor.0x00158d0005bd5c27_battery', 'Sensor Sala'],\n\
+      \    ['sensor.0x00158d0004110926_battery', 'Sensor Varanda'],\n    ['sensor.0x00158d00041d46d5_battery', 'Porta Sala'],\n\
+      \    ['sensor.0x00158d00045b039a_battery', 'Despensa'],\n    ['sensor.0x00158d00047bba26_battery', 'Sensor Cozinha'],\n\
+      \    ['sensor.0x00158d00054d601a_battery', 'Porta Banh. Suíte'],\n    ['sensor.0x00158d00045d75bf_battery', 'Sensor\
+      \ Closet'],\n    ['sensor.0x00158d00044ea7ba_battery', 'Portão Cachorros']\n  ];\n  const lowBat = [];\n  for (const\
+      \ [eid, label] of batSensors) {\n    const v = parseFloat(states[eid]?.state);\n    if (!Number.isNaN(v) && v <= 15)\
+      \ lowBat.push(`${label} ${Math.round(v)}%`);\n  }\n  const batStr = lowBat.length ? `⚠️ Bateria baixa: ${lowBat.slice(0,\
+      \ 3).join(', ')}` : '';\n\n  const blocks = [\n    `<span class=\"time\">${hh}<span class=\"time-colon\">:</span>${mm}</span>`,\n\
+      \    `<font color=\"#6a7377\"><b>${dateStr}</b></font>`,\n    `<b>${greet}</b>`,\n    `<b>${activeStr}</b>`,\n    weatherStr,\n\
+      \    vacStr,\n    modeStr,\n    energyStr,\n    batStr\n  ].filter(Boolean);\n\n  return blocks.map(b => `<p>${b}</p>`).join('');\n\
+      ]]]"
     extra_styles: "\n              :host {\n                --custom-layout-card-padding: 3.3vw;\n                --sidebar-time-font-size:\
       \ 5.0vw;\n                --sidebar-time-line-height: 4.3vw;\n                --sidebar-font-size: 1.32vw;\n       \
       \         --sidebar-line-height: 1.9vw;\n                --ha-card-background: none;\n                --ha-card-box-shadow:\
@@ -1325,7 +1369,6 @@ views:
         navigation_path: '#popup-energia'
       triggers_update:
       - sensor.river2_battery_level
-      - sensor.sala_varanda_escritorio_power
       variables:
         notify: "[[[\n  const bat = parseFloat(states['sensor.river2_battery_level']?.state);\n  return !Number.isNaN(bat)\
           \ && bat <= 25;\n]]]"
@@ -1361,30 +1404,60 @@ views:
       tap_action:
         action: navigate
         navigation_path: '#popup-updates'
-      triggers_update: all
+      triggers_update:
+      - update.home_assistant_core_update
+      - update.home_assistant_supervisor_update
+      - update.home_assistant_operating_system_update
+      - update.zigbee2mqtt_update
+      - update.home_assistant_mini_display
+      - update.binance_integration_for_home_assistant_update
+      - update.pihole_image_update_available
+      - update.uptime_kuma_image_update_available
+      - update.traefik_image_update_available
+      - update.cloudflared_image_update_available
+      - update.portainer_image_update_available
+      - update.sonarr_image_update_available
+      - update.radarr_image_update_available
+      - update.bazarr_image_update_available
+      - update.transmission_image_update_available
+      - update.qbittorrent_image_update_available
+      - update.beszel_hub_image_update_available
+      - update.beszel_agent_image_update_available
+      - update.postgres_image_update_available
+      - update.redis_image_update_available
+      - update.0xa4c138f397b856f0
+      - update.0xa4c13818e2a13578
       variables:
-        notify: "[[[\n  let count = 0;\n  for (const [eid, st] of Object.entries(states)) {\n    if (eid.startsWith('update.')\
-          \ && st.state === 'on') count++;\n  }\n  return count;\n]]]"
+        notify: "[[[\n  const ids = [\n    'update.home_assistant_core_update',\n    'update.home_assistant_supervisor_update',\n\
+          \    'update.home_assistant_operating_system_update',\n    'update.zigbee2mqtt_update',\n    'update.home_assistant_mini_display',\n\
+          \    'update.binance_integration_for_home_assistant_update',\n    'update.pihole_image_update_available',\n    'update.uptime_kuma_image_update_available',\n\
+          \    'update.traefik_image_update_available',\n    'update.cloudflared_image_update_available',\n    'update.portainer_image_update_available',\n\
+          \    'update.sonarr_image_update_available',\n    'update.radarr_image_update_available',\n    'update.bazarr_image_update_available',\n\
+          \    'update.transmission_image_update_available',\n    'update.qbittorrent_image_update_available',\n    'update.beszel_hub_image_update_available',\n\
+          \    'update.beszel_agent_image_update_available',\n    'update.postgres_image_update_available',\n    'update.redis_image_update_available',\n\
+          \    'update.0xa4c138f397b856f0',\n    'update.0xa4c13818e2a13578',\n  ];\n  let count = 0;\n  for (const eid of\
+          \ ids) {\n    if (states[eid]?.state === 'on') count++;\n  }\n  return count;\n]]]"
       template: footer
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-sala'
+    name: Sala
+    icon: mdi:sofa
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-sala'
-      name: Sala
-      icon: mdi:sofa
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: entities
       title: Iluminação da Sala
       show_header_toggle: true
@@ -1413,25 +1486,26 @@ views:
         name: Echo Show 8
       - entity: binary_sensor.0x00158d0005bd5c27_occupancy
         name: Presença Sala
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-escritorio'
+    name: Escritório
+    icon: mdi:desk
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-escritorio'
-      name: Escritório
-      icon: mdi:desk
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: custom:mushroom-climate-card
       entity: climate.escritorio_ar_condicionado
       name: Ar-Condicionado Escritório
@@ -1465,25 +1539,26 @@ views:
         name: Temperatura
       - entity: sensor.0xa4c13818e2a13578_humidity
         name: Umidade
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-suite'
+    name: Suíte
+    icon: mdi:bed
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-suite'
-      name: Suíte
-      icon: mdi:bed
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: entities
       title: Iluminação & Clima
       show_header_toggle: false
@@ -1531,25 +1606,26 @@ views:
         entity: timer.suite_fan
         name: Timer Ventilador
         icon: mdi:fan-clock
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-cozinha'
+    name: Cozinha & Varanda
+    icon: mdi:countertop
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-cozinha'
-      name: Cozinha & Varanda
-      icon: mdi:countertop
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: entities
       title: Luzes & Tomadas
       show_header_toggle: true
@@ -1580,25 +1656,26 @@ views:
         name: Presença Cozinha
       - entity: binary_sensor.0x00158d0004110926_occupancy
         name: Presença Varanda
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-sistema'
+    name: Sistema & Servidor
+    icon: mdi:server
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-sistema'
-      name: Sistema & Servidor
-      icon: mdi:server
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: custom:mini-graph-card
       name: CPU & Memória (24h)
       hours_to_show: 24
@@ -1636,25 +1713,26 @@ views:
         name: Velocidade Internet
       - entity: sensor.backup_last_successful_automatic_backup
         name: Último Backup
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-energia'
+    name: Energia & UPS
+    icon: mdi:lightning-bolt
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-energia'
-      name: Energia & UPS
-      icon: mdi:lightning-bolt
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: custom:mini-graph-card
       name: Potência Instantânea (24h)
       hours_to_show: 24
@@ -1700,25 +1778,26 @@ views:
         name: Saída (W)
       - entity: sensor.river2_battery_temperature
         name: Temperatura Bateria
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-aspirador'
+    name: Eufy X10 Pro
+    icon: mdi:robot-vacuum-variant
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-aspirador'
-      name: Eufy X10 Pro
-      icon: mdi:robot-vacuum-variant
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: custom:mushroom-vacuum-card
       entity: vacuum.escritorio_eufy_x10_pro
       name: Eufy X10 Pro
@@ -1752,25 +1831,26 @@ views:
         name: Última Área
       - entity: sensor.escritorio_eufy_x10_pro_cleaning_time
         name: Último Tempo
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-clima'
+    name: Clima & Ambientes
+    icon: mdi:thermometer
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-clima'
-      name: Clima & Ambientes
-      icon: mdi:thermometer
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: weather-forecast
       entity: weather.openweathermap
       name: Tempo Agora
@@ -1812,29 +1892,30 @@ views:
         name: Varanda (Temp)
       - entity: sensor.0x00158d000244775f_temperature
         name: Banheiro Social (Temp)
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-cameras'
+    name: Câmeras & Segurança
+    icon: mdi:shield-home
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-cameras'
-      name: Câmeras & Segurança
-      icon: mdi:shield-home
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: picture-entity
       entity: camera.sala_fluent
       name: Câmera Sala
-      camera_view: live
+      camera_view: auto
     - type: entities
       title: Segurança & Modos da Casa
       show_header_toggle: false
@@ -1851,25 +1932,26 @@ views:
         name: Modo Férias
       - entity: input_boolean.sensor_movimento_banheiro_social
         name: Sensor Banheiro Social
-  - type: vertical-stack
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#popup-updates'
+    name: Atualizações
+    icon: mdi:arrow-up-bold-circle-outline
     view_layout:
       grid-area: popups
+    width_desktop: 540px
+    bg_color: rgba(28, 32, 34, 0.96)
+    bg_opacity: 96
+    bg_blur: 8
+    shadow_opacity: 40
+    background_update: false
+    performance_mode: true
+    styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.96) !important;\n        border: 1px\
+      \ solid rgba(255, 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200,\
+      \ 218, 222, 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card\
+      \ {\n        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+      \ 14px;\n      }\n    "
     cards:
-    - type: custom:bubble-card
-      card_type: pop-up
-      hash: '#popup-updates'
-      name: Atualizações
-      icon: mdi:arrow-up-bold-circle-outline
-      bg_color: rgba(28, 32, 34, 0.94)
-      bg_opacity: 94
-      bg_blur: 20
-      shadow_opacity: 40
-      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
-        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
-        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
-        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
-        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
-        \ 14px;\n      }\n    "
     - type: entities
       title: Home Assistant
       show_header_toggle: false

@@ -103,9 +103,7 @@ def grid_card_mod() -> dict:
 def popup_bubble_styles() -> str:
     return """
       .bubble-pop-up-container {
-        background: rgba(26, 30, 32, 0.94) !important;
-        backdrop-filter: blur(22px) !important;
-        -webkit-backdrop-filter: blur(22px) !important;
+        background: rgba(26, 30, 32, 0.96) !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
       }
       .bubble-header-container {
@@ -419,7 +417,6 @@ def build_templates(loader_uri: str) -> dict:
                     {"grid-template-rows": "auto repeat(2, min-content)"},
                     {"gap": "1.3%"},
                     {"align-items": "start"},
-                    {"will-change": "transform"},
                 ],
                 "name": [{"justify-self": "start"}, {"line-height": "121%"}],
                 "state": [{"justify-self": "start"}, {"line-height": "115%"}],
@@ -619,7 +616,7 @@ def build_templates(loader_uri: str) -> dict:
   }
   return variables.translate_unknown;
 ]]]""",
-            "triggers_update": "all",
+            "triggers_update": ["sensor.time_date"],
             "tap_action": {"action": "more-info"},
             "styles": {
                 "custom_fields": {
@@ -713,7 +710,14 @@ def build_templates(loader_uri: str) -> dict:
         "conditional_media": {
             "aspect_ratio": "1000/996",
             "template": ["base", "base_media", "icon_play_pause"],
-            "triggers_update": "all",
+            "triggers_update": [
+                "media_player.tv_sala_androidtv",
+                "media_player.sala_echo_show_8",
+                "media_player.suite_echo_dot_suite",
+                "media_player.google_home_escritorio",
+                "media_player.tv_samsung_suite",
+                "media_player.todo_lugar",
+            ],
             "variables": {
                 "active_player": """[[[
   const players = [
@@ -769,9 +773,9 @@ def build_templates(loader_uri: str) -> dict:
                     {
                         "background-image": """[[[
   const pic = variables.entity_picture;
-  if (pic) return `linear-gradient(0deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.08) 55%, rgba(0,0,0,0.2) 100%), url("${pic}")`;
-  if (variables.state_on) return 'radial-gradient(circle at 20% 20%, rgba(49,130,183,0.42), rgba(26,34,38,0.88))';
-  return 'radial-gradient(circle at 80% 20%, rgba(82,102,112,0.28), rgba(28,32,34,0.65))';
+  if (pic) return `linear-gradient(0deg, rgba(16,20,22,0.88) 0%, rgba(16,20,22,0.52) 28%, rgba(0,0,0,0.08) 55%, rgba(0,0,0,0.2) 100%), url("${pic}")`;
+  if (variables.state_on) return 'linear-gradient(0deg, rgba(16,20,22,0.72) 0%, rgba(16,20,22,0.25) 32%, transparent 55%), radial-gradient(circle at 20% 20%, rgba(49,130,183,0.42), rgba(26,34,38,0.88))';
+  return 'linear-gradient(0deg, rgba(16,20,22,0.68) 0%, rgba(16,20,22,0.22) 32%, transparent 55%), radial-gradient(circle at 80% 20%, rgba(82,102,112,0.28), rgba(28,32,34,0.65))';
 ]]]"""
                     },
                     {"color": "#efefef"},
@@ -782,38 +786,60 @@ def build_templates(loader_uri: str) -> dict:
                         {"width": "28%"},
                         {"fill": "[[[ return variables.state_on ? 'rgba(255, 255, 255, 0.85)' : '#9da0a2'; ]]]"},
                     ],
-                    "blur_overlay": [
-                        {"display": "block"},
-                        {"position": "absolute"},
-                        {"width": "103.1%"},
-                        {"height": "103.1%"},
-                        {"clip-path": "inset(74.5% 1.45% 1.45% 1.45% round 0 0 5% 5%)"},
-                        {"backdrop-filter": "var(--blur-intensity)"},
-                        {"-webkit-backdrop-filter": "var(--blur-intensity)"},
-                        {"left": "-1.5%"},
-                        {"bottom": "-1.6%"},
-                    ],
                 },
-            },
-            "custom_fields": {
-                "blur_overlay": """[[[
-  setTimeout(() => {
-      let elt = this.shadowRoot,
-          card = elt?.getElementById('card'),
-          container = elt?.getElementById('container'),
-          blur_overlay = elt?.getElementById('blur_overlay');
-      if (elt && card && container && blur_overlay) {
-          card.insertBefore(blur_overlay, container);
-      }
-  }, 0);
-  return ' ';
-]]]"""
             },
         },
         "sidebar": {
             "show_state": False,
             "show_icon": False,
-            "triggers_update": "all",
+            "triggers_update": [
+                "sensor.time_date",
+                "weather.openweathermap",
+                "light.sala_central",
+                "light.sala_led_sofa",
+                "light.sala_spot_sofa",
+                "light.sala_mesa_jantar",
+                "light.sala_entrada",
+                "light.sala_banh_social",
+                "light.cozinha_central",
+                "light.cozinha_bancada",
+                "light.cozinha_lavanderia",
+                "light.escritorio_spot_escritorio_led",
+                "light.suite_ventilador",
+                "light.suite_closet",
+                "light.quarto_suite_banheiro_espelho",
+                "light.hall_light_switch_top",
+                "light.hall_light_switch_bottom",
+                "climate.escritorio_ar_condicionado",
+                "switch.suite_ac",
+                "switch.sala_ac",
+                "fan.suite_ventilador_2",
+                "media_player.tv_sala_androidtv",
+                "media_player.tv_samsung_suite",
+                "switch.escritorio_computador",
+                "switch.escritorio_monitor",
+                "vacuum.escritorio_eufy_x10_pro",
+                "lock.kuanttum_delta_pro_operate_lock",
+                "input_boolean.modo_visitas",
+                "input_boolean.faxina",
+                "input_boolean.vacation_mode",
+                "sensor.sala_varanda_escritorio_power",
+                "sensor.daily_energy",
+                "sensor.monthly_energy_cost",
+                "sensor.0xa4c1388ad4a9a0b6_battery",
+                "sensor.0xa4c13818e2a13578_battery",
+                "sensor.0xa4c138f397b856f0_battery",
+                "sensor.0x00158d00048740a5_battery",
+                "sensor.0x00158d000244775f_battery",
+                "sensor.0x00158d0005bd5c27_battery",
+                "sensor.0x00158d0004110926_battery",
+                "sensor.0x00158d00041d46d5_battery",
+                "sensor.0x00158d00045b039a_battery",
+                "sensor.0x00158d00047bba26_battery",
+                "sensor.0x00158d00054d601a_battery",
+                "sensor.0x00158d00045d75bf_battery",
+                "sensor.0x00158d00044ea7ba_battery",
+            ],
             "tap_action": {"action": "none"},
             "name": """[[[
   const now = new Date();
@@ -866,7 +892,6 @@ def build_templates(loader_uri: str) -> dict:
       ? `${activeParts[0]} ligado`
       : `${activeParts.slice(0, -1).join(', ')} e ${activeParts[activeParts.length - 1]} ligados`;
 
-  // Weather
   const w = states['weather.openweathermap'];
   const condMap = {
     'sunny': 'Ensolarado', 'clear-night': 'Céu limpo', 'cloudy': 'Nublado',
@@ -882,13 +907,11 @@ def build_templates(loader_uri: str) -> dict:
     weatherStr = `${cond} · ${t}°C (sensação ${feels}°C) · ${hum}%`;
   }
 
-  // Vacuum
   const vac = states['vacuum.escritorio_eufy_x10_pro'];
   let vacStr = '';
   if (vac?.state === 'cleaning') vacStr = '<b>🤖 Eufy X10 aspirando</b>';
   else if (vac?.state === 'returning') vacStr = '<b>🤖 Eufy X10 voltando à base</b>';
 
-  // Modes / Lock
   let modeParts = [];
   if (states['lock.kuanttum_delta_pro_operate_lock']?.state === 'unlocked') modeParts.push('🔓 Porta destrancada');
   if (states['input_boolean.modo_visitas']?.state === 'on') modeParts.push('👥 Modo Visitas');
@@ -896,7 +919,6 @@ def build_templates(loader_uri: str) -> dict:
   if (states['input_boolean.vacation_mode']?.state === 'on') modeParts.push('✈️ Modo Férias');
   const modeStr = modeParts.length ? `<b>${modeParts.join(' · ')}</b>` : '';
 
-  // Energy
   const pwr = parseFloat(states['sensor.sala_varanda_escritorio_power']?.state);
   const cost = parseFloat(states['sensor.monthly_energy_cost']?.state);
   const daily = parseFloat(states['sensor.daily_energy']?.state);
@@ -907,16 +929,25 @@ def build_templates(loader_uri: str) -> dict:
     if (!Number.isNaN(cost)) energyStr += ` · R$ ${Math.round(cost)}/mês`;
   }
 
-  // Low battery (<= 15%)
+  const batSensors = [
+    ['sensor.0xa4c1388ad4a9a0b6_battery', 'Suíte'],
+    ['sensor.0xa4c13818e2a13578_battery', 'Escritório'],
+    ['sensor.0xa4c138f397b856f0_battery', 'Cozinha'],
+    ['sensor.0x00158d00048740a5_battery', 'Varanda'],
+    ['sensor.0x00158d000244775f_battery', 'Banh. Social'],
+    ['sensor.0x00158d0005bd5c27_battery', 'Sensor Sala'],
+    ['sensor.0x00158d0004110926_battery', 'Sensor Varanda'],
+    ['sensor.0x00158d00041d46d5_battery', 'Porta Sala'],
+    ['sensor.0x00158d00045b039a_battery', 'Despensa'],
+    ['sensor.0x00158d00047bba26_battery', 'Sensor Cozinha'],
+    ['sensor.0x00158d00054d601a_battery', 'Porta Banh. Suíte'],
+    ['sensor.0x00158d00045d75bf_battery', 'Sensor Closet'],
+    ['sensor.0x00158d00044ea7ba_battery', 'Portão Cachorros']
+  ];
   const lowBat = [];
-  for (const [eid, st] of Object.entries(states)) {
-    if (eid.startsWith('sensor.0x') && eid.endsWith('_battery')) {
-      const v = parseFloat(st.state);
-      if (!Number.isNaN(v) && v <= 15) {
-        const nm = (st.attributes?.friendly_name || eid).replace(/ Battery$/i, '');
-        lowBat.push(`${nm} ${Math.round(v)}%`);
-      }
-    }
+  for (const [eid, label] of batSensors) {
+    const v = parseFloat(states[eid]?.state);
+    if (!Number.isNaN(v) && v <= 15) lowBat.push(`${label} ${Math.round(v)}%`);
   }
   const batStr = lowBat.length ? `⚠️ Bateria baixa: ${lowBat.slice(0, 3).join(', ')}` : '';
 
@@ -1069,23 +1100,21 @@ def build_popups() -> list:
 
     def make_popup(hash_id: str, title: str, icon: str, cards: list) -> dict:
         return {
-            "type": "vertical-stack",
+            "type": "custom:bubble-card",
+            "card_type": "pop-up",
+            "hash": hash_id,
+            "name": title,
+            "icon": icon,
             "view_layout": {"grid-area": "popups"},
-            "cards": [
-                {
-                    "type": "custom:bubble-card",
-                    "card_type": "pop-up",
-                    "hash": hash_id,
-                    "name": title,
-                    "icon": icon,
-                    "bg_color": "rgba(28, 32, 34, 0.94)",
-                    "bg_opacity": 94,
-                    "bg_blur": 20,
-                    "shadow_opacity": 40,
-                    "styles": p_style,
-                },
-                *cards,
-            ],
+            "width_desktop": "540px",
+            "bg_color": "rgba(28, 32, 34, 0.96)",
+            "bg_opacity": 96,
+            "bg_blur": 8,
+            "shadow_opacity": 40,
+            "background_update": False,
+            "performance_mode": True,
+            "styles": p_style,
+            "cards": cards,
         }
 
     return [
@@ -1417,7 +1446,7 @@ def build_popups() -> list:
                     "type": "picture-entity",
                     "entity": "camera.sala_fluent",
                     "name": "Câmera Sala",
-                    "camera_view": "live",
+                    "camera_view": "auto",
                 },
                 {
                     "type": "entities",
@@ -1895,7 +1924,6 @@ def build_dashboard_config() -> dict:
                                 "tap_action": {"action": "navigate", "navigation_path": "#popup-energia"},
                                 "triggers_update": [
                                     "sensor.river2_battery_level",
-                                    "sensor.sala_varanda_escritorio_power",
                                 ],
                                 "variables": {
                                     "notify": """[[[
@@ -1935,12 +1963,59 @@ def build_dashboard_config() -> dict:
                                 "type": "custom:button-card",
                                 "name": '<ha-icon icon="mdi:arrow-up-bold-circle-outline"></ha-icon> Updates',
                                 "tap_action": {"action": "navigate", "navigation_path": "#popup-updates"},
-                                "triggers_update": "all",
+                                "triggers_update": [
+                                    "update.home_assistant_core_update",
+                                    "update.home_assistant_supervisor_update",
+                                    "update.home_assistant_operating_system_update",
+                                    "update.zigbee2mqtt_update",
+                                    "update.home_assistant_mini_display",
+                                    "update.binance_integration_for_home_assistant_update",
+                                    "update.pihole_image_update_available",
+                                    "update.uptime_kuma_image_update_available",
+                                    "update.traefik_image_update_available",
+                                    "update.cloudflared_image_update_available",
+                                    "update.portainer_image_update_available",
+                                    "update.sonarr_image_update_available",
+                                    "update.radarr_image_update_available",
+                                    "update.bazarr_image_update_available",
+                                    "update.transmission_image_update_available",
+                                    "update.qbittorrent_image_update_available",
+                                    "update.beszel_hub_image_update_available",
+                                    "update.beszel_agent_image_update_available",
+                                    "update.postgres_image_update_available",
+                                    "update.redis_image_update_available",
+                                    "update.0xa4c138f397b856f0",
+                                    "update.0xa4c13818e2a13578",
+                                ],
                                 "variables": {
                                     "notify": """[[[
+  const ids = [
+    'update.home_assistant_core_update',
+    'update.home_assistant_supervisor_update',
+    'update.home_assistant_operating_system_update',
+    'update.zigbee2mqtt_update',
+    'update.home_assistant_mini_display',
+    'update.binance_integration_for_home_assistant_update',
+    'update.pihole_image_update_available',
+    'update.uptime_kuma_image_update_available',
+    'update.traefik_image_update_available',
+    'update.cloudflared_image_update_available',
+    'update.portainer_image_update_available',
+    'update.sonarr_image_update_available',
+    'update.radarr_image_update_available',
+    'update.bazarr_image_update_available',
+    'update.transmission_image_update_available',
+    'update.qbittorrent_image_update_available',
+    'update.beszel_hub_image_update_available',
+    'update.beszel_agent_image_update_available',
+    'update.postgres_image_update_available',
+    'update.redis_image_update_available',
+    'update.0xa4c138f397b856f0',
+    'update.0xa4c13818e2a13578',
+  ];
   let count = 0;
-  for (const [eid, st] of Object.entries(states)) {
-    if (eid.startsWith('update.') && st.state === 'on') count++;
+  for (const eid of ids) {
+    if (states[eid]?.state === 'on') count++;
   }
   return count;
 ]]]"""

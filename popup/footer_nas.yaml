@@ -122,9 +122,9 @@ browser_mod:
                   name: Serveromstart
                   icon: mdi:reload
                   tap_action:
-                    action: call-service
-                    service: browser_mod.sequence
-                    service_data:
+                    action: perform-action
+                    perform_action: browser_mod.sequence
+                    data:
                       sequence:
                         - service: browser_mod.notification
                           data:
@@ -139,9 +139,9 @@ browser_mod:
                   name: Container
                   icon: mdi:reload
                   tap_action:
-                    action: call-service
-                    service: browser_mod.sequence
-                    service_data:
+                    action: perform-action
+                    perform_action: browser_mod.sequence
+                    data:
                       sequence:
                         - service: browser_mod.notification
                           data:
@@ -302,25 +302,25 @@ browser_mod:
                   name: Processor
                   icon: mdi:chip
                   tap_action:
-                    action: call-service
-                    service: homeassistant.update_entity
-                    service_data:
+                    action: perform-action
+                    perform_action: homeassistant.update_entity
+                    data:
                       entity_id: sensor.processor_use
 
                 - entity: sensor.memory_use_percent
                   name: Minne - 4GB
                   tap_action:
-                    action: call-service
-                    service: homeassistant.update_entity
-                    service_data:
+                    action: perform-action
+                    perform_action: homeassistant.update_entity
+                    data:
                       entity_id: sensor.memory_use_percent
 
                 - entity: sensor.disk_use_percent
                   name: Lagring - 10.5TB
                   tap_action:
-                    action: call-service
-                    service: homeassistant.update_entity
-                    service_data:
+                    action: perform-action
+                    perform_action: homeassistant.update_entity
+                    data:
                       entity_id: sensor.disk_use_percent
 
             - type: custom:hui-horizontal-stack-card
@@ -331,9 +331,9 @@ browser_mod:
                   confirmation:
                     text: Är du säker på att du vill starta om NAS?
                   tap_action:
-                    action: call-service
-                    service: browser_mod.sequence
-                    service_data:
+                    action: perform-action
+                    perform_action: browser_mod.sequence
+                    data:
                       sequence:
                         - service: browser_mod.notification
                           data:
@@ -349,9 +349,9 @@ browser_mod:
                   confirmation:
                     text: Är du säker på att du vill stänga av NAS?
                   tap_action:
-                    action: call-service
-                    service: browser_mod.sequence
-                    service_data:
+                    action: perform-action
+                    perform_action: browser_mod.sequence
+                    data:
                       sequence:
                         - service: browser_mod.notification
                           data:

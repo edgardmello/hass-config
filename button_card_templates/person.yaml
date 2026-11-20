@@ -13,7 +13,7 @@ person:
       }
       return variables.translate_unknown;
     ]]]
-  triggers_update: sensor.time
+  triggers_update: all
   tap_action:
     action: none
   styles:
@@ -26,7 +26,8 @@ person:
   custom_fields:
     icon: >
       [[[
-        return entity && variables.entity_picture
-            ? `<img src="${variables.entity_picture}" width="100%">`
-            : null;
+        if (entity && variables.entity_picture) {
+            return `<img src="${variables.entity_picture}" width="100%">`;
+        }
+        return `<svg viewBox="0 0 50 50"><circle cx="25" cy="25" r="25" fill="rgba(157,160,162,0.18)"/><circle cx="25" cy="19" r="8" fill="${variables.state_on ? '#3182b7' : '#9da0a2'}"/><path d="M10 43c2-8 8-12 15-12s13 4 15 12" fill="${variables.state_on ? '#3182b7' : '#9da0a2'}"/></svg>`;
       ]]]

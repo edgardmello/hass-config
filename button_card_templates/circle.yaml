@@ -38,6 +38,7 @@ circle:
             * * * * * * * * * * * * * * * * * */
 
             let circle = (state, input, unit) => {
+                let showSlider = domain === 'light' && typeof input === 'number' && !Number.isNaN(input);
                 return `
                   <svg viewBox="0 0 50 50">
                     <style>
@@ -45,7 +46,7 @@ circle:
                         transform: rotate(-90deg);
                         transform-origin: 50% 50%;
                         stroke-dasharray: ${c};
-                        stroke-dashoffset: ${typeof input === 'number' && c - input / 100 * c};
+                        stroke-dashoffset: ${typeof input === 'number' && !Number.isNaN(input) ? c - input / 100 * c : 0};
                         stroke-width: var(--c-stroke-width);
                         stroke: ${state ? 'var(--c-stroke-color-on)' : 'var(--c-stroke-color-off)'};
                         fill: ${state ? 'var(--c-fill-color-on)' : 'var(--c-fill-color-off)'};
@@ -68,9 +69,9 @@ circle:
                     <text id="circle_value" x="50%" y="52%">${input}${tspan}${unit}</tspan></text>
                   </svg>
 
-                  ${domain === 'light' && `
+                  ${showSlider ? `
                       <input id="circle_slider" type="range" min="0" max="100" value="${input}">
-                  `}
+                  ` : ''}
                 `;
             }
 
@@ -80,16 +81,18 @@ circle:
             *                                 *
             * * * * * * * * * * * * * * * * * */
 
-            if (domain === 'light' && state) {
+            if (domain === 'light' && state && typeof input === 'number' && !Number.isNaN(input)) {
 
                 // wait 0ms for shadow dom
                 setTimeout(() => {
 
                     // then get elements
                     let elt = this.shadowRoot,
-                        circle_slider = elt.getElementById('circle_slider'),
-                        circle_value = elt.getElementById('circle_value'),
-                        circle_stroke = elt.getElementById('circle_stroke');
+                        circle_slider = elt?.getElementById('circle_slider'),
+                        circle_value = elt?.getElementById('circle_value'),
+                        circle_stroke = elt?.getElementById('circle_stroke');
+
+                    if (!circle_slider || !circle_value || !circle_stroke) return;
 
                     // approximate position of thumb relative to circle
                     circle_slider.style.top = `${(circle_slider.value - 50) / 1.66 - 1}%`;
@@ -192,7 +195,7 @@ circle:
             *                                 *
             * * * * * * * * * * * * * * * * * */
 
-            else if (variables.state_on) {
+            else if (variables.state_on && domain !== 'light') {
                 return circle(state, input, unit);
             }
         }

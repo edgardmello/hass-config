@@ -122,9 +122,12 @@ tablet:
 
   button-card-light-color-temp: hsl(204, 58%, 38%)
 
-  #browser_mod.popup
+  #browser_mod.popup & HA 2026.x dialogs
   dialog-backdrop-filter: blur(2em) brightness(0.75)
   popup-background-color: rgba(34,38,39,0.9)
+  ha-dialog-surface-background: rgba(34,38,39,0.9)
+  ha-dialog-border-radius: 1em
+  ha-card-border-width: 0px
   popup-border-width: 1px
   popup-border-radius: 1em
   popup-padding-x: 0px
@@ -146,7 +149,8 @@ tablet:
   card-mod-theme: tablet
 
   card-mod-root: |
-    #view {
+    #view,
+    hui-view-container {
       background: url('/local/background.png') !important;
       background-size: cover !important;
     }
@@ -207,7 +211,8 @@ tablet:
             div {
               height: 100%;
             }
-            .swiper-container {
+            .swiper-container,
+            .swiper {
               margin: -1.5vw !important;
               padding: 1.5vw !important;
             }
@@ -347,12 +352,15 @@ tablet:
         --ha-card-border-width: 0;
       }
 
-      ha-dialog {
+      ha-dialog,
+      ha-wa-dialog {
         --vertical-align-dialog: var(--tablet-popup-align-dialog) !important;
         --dialog-surface-margin-top: var(--tablet-popup-margin-top) !important;
+        --ha-dialog-surface-background: var(--popup-background-color) !important;
       }
 
-      ha-dialog > div:focus {
+      ha-dialog > div:focus,
+      ha-wa-dialog > div:focus {
         outline: none;
       }
 
@@ -375,3 +383,4 @@ tablet:
       div.mdc-dialog__surface {
         background-color: var(--popup-background-color) !important;
       }
+

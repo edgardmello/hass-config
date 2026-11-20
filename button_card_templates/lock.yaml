@@ -4,21 +4,28 @@ lock:
       [[[
         let elt = this.shadowRoot;
         if (variables.state_on && variables.lock === 'on') {
-            elt.getElementById('lock').classList.add('locked');
-            window.setTimeout(() => {
-                elt.getElementById('lock').classList.remove('locked');
-            }, 1100);
+            let lockEl = elt?.getElementById('lock');
+            if (lockEl) {
+                lockEl.classList.add('locked');
+                window.setTimeout(() => {
+                    lockEl.classList.remove('locked');
+                }, 1100);
+            }
         } else {
 
           // duplicate of "loader" template
-            let loader = (id, style, timeout) => {
-                elt.getElementById(id) && (elt.getElementById(id).style.display = style,
+            let loader = (id, style) => {
+                let el = elt?.getElementById(id);
+                if (el) {
+                    el.style.display = style;
                     window.setTimeout(() => {
-                      elt.getElementById('loader').style.display = 'none'
-                    }, 20000))
+                      let l = elt?.getElementById('loader');
+                      if (l) l.style.display = 'none';
+                    }, 20000);
+                }
             };
-            loader('circle', 'none', 'initial'),
-            loader('loader', 'initial', 'none');
+            loader('circle', 'none');
+            loader('loader', 'initial');
         }
       ]]]
   custom_fields:

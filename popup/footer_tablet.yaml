@@ -54,9 +54,9 @@ browser_mod:
                 - entity: sensor.galaxy_tab_a_battery
                   icon: mdi:battery
                   tap_action:
-                    action: call-service
-                    service: homeassistant.update_entity
-                    service_data:
+                    action: perform-action
+                    perform_action: homeassistant.update_entity
+                    data:
                       entity_id: sensor.galaxy_tab_a_battery_level
 
             - type: custom:bar-card
@@ -76,18 +76,18 @@ browser_mod:
                   name: Minne - 2GB
                   icon: mdi:memory
                   tap_action:
-                    action: call-service
-                    service: homeassistant.update_entity
-                    service_data:
+                    action: perform-action
+                    perform_action: homeassistant.update_entity
+                    data:
                       entity_id: sensor.template_fullykiosk_memory
 
                 - entity: sensor.template_fullykiosk_storage
                   name: Lagring - 32GB
                   icon: mdi:sd
                   tap_action:
-                    action: call-service
-                    service: homeassistant.update_entity
-                    service_data:
+                    action: perform-action
+                    perform_action: homeassistant.update_entity
+                    data:
                       entity_id: sensor.template_fullykiosk_storage
 
         - type: custom:mod-card
@@ -105,9 +105,9 @@ browser_mod:
                 name: Startsidan
                 icon: mdi:reload
                 tap_action:
-                  action: call-service
-                  service: browser_mod.sequence
-                  service_data:
+                  action: perform-action
+                  perform_action: browser_mod.sequence
+                  data:
                     sequence:
                       - service: browser_mod.notification
                         data:
@@ -121,9 +121,9 @@ browser_mod:
                 name: Hela appen
                 icon: mdi:reload
                 tap_action:
-                  action: call-service
-                  service: browser_mod.sequence
-                  service_data:
+                  action: perform-action
+                  perform_action: browser_mod.sequence
+                  data:
                     sequence:
                       - service: browser_mod.notification
                         data:

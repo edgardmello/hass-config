@@ -63,9 +63,9 @@ browser_mod:
                 entity: media_player.sony_bravia_tv
                 icon: mdi:volume-mute
                 tap_action:
-                  action: call-service
-                  service: media_player.volume_mute
-                  service_data:
+                  action: perform-action
+                  perform_action: media_player.volume_mute
+                  data:
                     entity_id: >
                       [[[ return entity.entity_id; ]]]
                     is_volume_muted: >
@@ -76,9 +76,9 @@ browser_mod:
                 entity: media_player.sony_bravia_tv
                 icon: mdi:volume-minus
                 tap_action:
-                  action: call-service
-                  service: media_player.volume_down
-                  service_data:
+                  action: perform-action
+                  perform_action: media_player.volume_down
+                  data:
                     entity_id: >
                       [[[ return entity.entity_id; ]]]
                 template: icon_only
@@ -87,9 +87,9 @@ browser_mod:
                 entity: media_player.sony_bravia_tv
                 icon: mdi:volume-plus
                 tap_action:
-                  action: call-service
-                  service: media_player.volume_up
-                  service_data:
+                  action: perform-action
+                  perform_action: media_player.volume_up
+                  data:
                     entity_id: >
                       [[[ return entity.entity_id; ]]]
                 template: icon_only

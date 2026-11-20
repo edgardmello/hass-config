@@ -29,11 +29,11 @@ base_media:
     action: >
       [[[
         return variables.media_on
-            ? 'call-service'
+            ? 'perform-action'
             : 'none';
       ]]]
-    service: media_player.media_play_pause
-    service_data:
+    perform_action: media_player.media_play_pause
+    data:
       entity_id: >
         [[[
           return variables.entity_id;
@@ -98,8 +98,8 @@ media:
       - background-position: center
       - background-image: >
           [[[
-            if (variables.is_youtube) {
-                return `linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(${states[this._config?.triggers_update].state})`;
+            if (variables.is_youtube && states[this._config?.triggers_update]) {
+                return `linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,0) 100%), url(${states[this._config.triggers_update].state})`;
             } else {
                 return variables.media_on && variables.entity_picture === undefined
                     ? 'linear-gradient(0deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.8) 100%)'
@@ -131,27 +131,30 @@ conditional_media:
       ]]]
   state_display: >
     [[[
-      let horizontalStack = this.getRootNode().host,
-          swipeCard = horizontalStack.getRootNode().host,
-          gridTitle = swipeCard.getRootNode().querySelector("h1");
+      let horizontalStack = this.getRootNode()?.host,
+          swipeCard = horizontalStack?.getRootNode()?.host,
+          gridTitle = swipeCard?.getRootNode()?.querySelector("h1");
 
-      swipeCard.swiper.on("slideChange", () => {
-          if (swipeCard.swiper.realIndex === 0) {
-              gridTitle.textContent = "Media";
-          }
-          else if (swipeCard.swiper.realIndex === 1) {
-              gridTitle.textContent = "Spelare";
-          }
-      });
+      if (swipeCard?.swiper && gridTitle && !swipeCard._titleListenerAttached) {
+          swipeCard._titleListenerAttached = true;
+          swipeCard.swiper.on("slideChange", () => {
+              if (swipeCard.swiper.realIndex === 0) {
+                  gridTitle.textContent = "Media";
+              }
+              else if (swipeCard.swiper.realIndex === 1) {
+                  gridTitle.textContent = "Spelare";
+              }
+          });
+      }
 
       if (entity) {
           let elt = this.shadowRoot,
-              await = setTimeout(marquee, 100),
               data = entity.attributes.data,
               artist = entity.attributes.media_artist,
               title = entity.attributes.media_title;
+          setTimeout(marquee, 100);
 
-            if (data !== undefined) {
+            if (data !== undefined && data[variables.i]) {
                 var number = data[variables.i].number === undefined && data[variables.i].aired !== undefined
                     ? `(${data[variables.i].aired.split("-")[0]})`
                     : data[variables.i].number === undefined && data[variables.i].aired === undefined
@@ -169,8 +172,8 @@ conditional_media:
             }
 
           function marquee() {
-              let state = elt.getElementById("state"),
-                  container = elt.getElementById("container");
+              let state = elt?.getElementById("state"),
+                  container = elt?.getElementById("container");
 
               if (state && container) {
                   state.innerHTML = output;
@@ -200,9 +203,9 @@ conditional_media:
       return variables.translate_unknown;
     ]]]
   tap_action:
-    action: call-service
-    service: media_player.media_play_pause
-    service_data:
+    action: perform-action
+    perform_action: media_player.media_play_pause
+    data:
       entity_id: >
         [[[ return variables.entity_id; ]]]
   styles:
@@ -222,13 +225,13 @@ conditional_media:
       - background-image: >
           [[[
             if (entity) {
-              if (variables.is_youtube) {
-                  return `url(${states[this._config?.triggers_update].state})`;
+              if (variables.is_youtube && states[this._config?.triggers_update]) {
+                  return `url(${states[this._config.triggers_update].state})`;
               } else {
                 let data = entity.attributes.data;
-                return data && (data[variables.i].fanart || data[variables.i].poster)
+                return data && data[variables.i] && (data[variables.i].fanart || data[variables.i].poster)
                     ? `url("${data[variables.i].fanart}"), url("${data[variables.i].poster}")`
-                    : `url("${variables.entity_picture}")`;
+                    : variables.entity_picture ? `url("${variables.entity_picture}")` : 'none';
               }
             }
           ]]]

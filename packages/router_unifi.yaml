@@ -58,56 +58,56 @@ command_line:
 template:
   - binary_sensor:
       - unique_id: udm_internet
+        default_entity_id: binary_sensor.template_udm_internet
+        name: Internet
+        icon: mdi:wan
+        device_class: connectivity
         state: >
           {{ state_attr('sensor.udm_unifios', 'internet') | default }}
-        attributes:
-          friendly_name: Internet
-          icon: mdi:wan
-          device_class: connectivity
 
   - sensor:
       - unique_id: udm_cpu
+        default_entity_id: sensor.template_udm_cpu
+        name: Processor
+        icon: mdi:chip
+        unit_of_measurement: '%'
         state: >
           {{ state_attr('sensor.udm_unifios', 'cpu') | default }}
-        attributes:
-          friendly_name: Processor
-          icon: mdi:chip
-          unit_of_measurement: '%'
 
       - unique_id: udm_cpu_temp
+        default_entity_id: sensor.template_udm_cpu_temp
+        name: Processortemperatur
+        icon: mdi:thermometer
+        unit_of_measurement: '°C'
         state: >
           {{ state_attr('sensor.udm_unifios', 'cpu_temp') | default }}
-        attributes:
-          friendly_name: Processortemperatur
-          icon: mdi:thermometer
-          unit_of_measurement: '°C'
 
       - unique_id: udm_mem
+        default_entity_id: sensor.template_udm_mem
+        name: Minne
+        icon: mdi:memory
+        unit_of_measurement: '%'
         state: >
           {{ state_attr('sensor.udm_unifios', 'mem') | default }}
-        attributes:
-          friendly_name: Minne
-          icon: mdi:memory
-          unit_of_measurement: '%'
 
       - unique_id: udm_disk
+        default_entity_id: sensor.template_udm_disk
+        name: Lagring
+        icon: mdi:harddisk
+        unit_of_measurement: '%'
         state: >
           {{ state_attr('sensor.udm_unifios', 'disk') | default }}
-        attributes:
-          friendly_name: Lagring
-          icon: mdi:harddisk
-          unit_of_measurement: '%'
 
       - unique_id: udm_uptime
+        default_entity_id: sensor.template_udm_uptime
+        name: Senaste omstart
+        device_class: timestamp
         state: >
           {{ state_attr('sensor.udm_unifios', 'uptime') | default }}
-        attributes:
-          friendly_name: Senaste omstart
-          device_class: timestamp
 
       - unique_id: udm_version
+        default_entity_id: sensor.template_udm_version
+        name: Version
+        icon: mdi:router-wireless
         state: >
           {{ state_attr('sensor.udm_unifios', 'version') | default }}
-        attributes:
-          friendly_name: Version
-          icon: mdi:router-wireless

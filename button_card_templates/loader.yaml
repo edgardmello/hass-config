@@ -7,14 +7,18 @@ loader:
       [[[
         if (entity) {
             let elt = this.shadowRoot,
-                loader = (id, style, timeout) => {
-                  elt.getElementById(id) && (elt.getElementById(id).style.display = style,
+                loader = (id, style) => {
+                  let el = elt?.getElementById(id);
+                  if (el) {
+                    el.style.display = style;
                     window.setTimeout(() => {
-                      elt.getElementById('loader').style.display = 'none'
-                    }, 20000))
+                      let l = elt?.getElementById('loader');
+                      if (l) l.style.display = 'none';
+                    }, 20000);
+                  }
                 };
-            loader('circle', 'none', 'initial'),
-            loader('loader', 'initial', 'none');
+            loader('circle', 'none');
+            loader('loader', 'initial');
         }
       ]]]
   styles:

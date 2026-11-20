@@ -16,21 +16,21 @@ input_number:
 automation:
   - alias: fan_turn_off
     id: '0568618309657'
-    trigger:
-      - platform: state
+    triggers:
+      - trigger: state
         entity_id: switch.gosund_fan_switch
         from: 'off'
         to: 'on'
         for:
           hours: >
             {{ states('input_number.fan_timer') | int }}
-      - platform: state
+      - trigger: state
         entity_id: switch.imac
         from: 'on'
         to: 'off'
         for:
           minutes: 15
-    action:
-      service: switch.turn_off
+    actions:
+      action: switch.turn_off
       target:
         entity_id: switch.gosund_fan_switch

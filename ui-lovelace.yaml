@@ -92,9 +92,9 @@ views:
               type: custom:button-card
               entity: timer.laundry
               double_tap_action:
-                action: call-service
-                service: input_boolean.turn_off
-                service_data:
+                action: perform-action
+                perform_action: input_boolean.turn_off
+                data:
                   entity_id: input_boolean.laundry_display
               template: laundry
 
@@ -556,8 +556,7 @@ views:
               <ha-icon icon="mdi:robot-vacuum-variant"></ha-icon> Städa
             tap_action:
               !include popup/footer_vacuum.yaml
-            triggers_update:
-              - sensor.date
+            triggers_update: all
             variables:
               notify: >
                 [[[

@@ -25,16 +25,16 @@ automation:
   - alias: toast
     id: '3161036041566'
     mode: parallel
-    trigger:
-      platform: state
+    triggers:
+      trigger: state
       entity_id:
         - binary_sensor.garderob_motion_motion
         - binary_sensor.badrum_motion_motion
         - binary_sensor.wemo_motion
       from: 'off'
       to: 'on'
-    action:
-      service: browser_mod.notification
+    actions:
+      action: browser_mod.notification
       data:
         duration: 3000
         message: >
@@ -43,15 +43,15 @@ automation:
   - alias: dismiss_lovelace_updated
     id: '1309195316329'
     mode: restart
-    trigger:
-      platform: event
+    triggers:
+      trigger: event
       event_type: lovelace_updated
-    action:
+    actions:
       repeat:
         count: 5
         sequence:
           - delay: 0.5
-          - service: browser_mod.notification
+          - action: browser_mod.notification
             data:
               duration: 1
               message: ' '
@@ -60,17 +60,17 @@ automation:
     id: '5611101897022'
     mode: single
     max_exceeded: silent
-    trigger:
-      platform: calendar
+    triggers:
+      trigger: calendar
       event: start
       entity_id: calendar.sophamtning
       offset: "-09:00:00"
-    condition:
+    conditions:
       condition: state
       entity_id: binary_sensor.sovrum_contact_contact
       state: 'on'
-    action:
-      - service: notify.all_devices
+    actions:
+      - action: notify.all_devices
         data:
           title: >
             {{ '\u267B' }} Sophämtning imorgon
@@ -80,22 +80,22 @@ automation:
 
   - alias: ios_notify_hass_update
     id: '7958228563778'
-    trigger:
-      platform: state
+    triggers:
+      trigger: state
       entity_id:
         - sensor.docker_hub
         - sensor.docker_hub_beta
-    condition: >
+    conditions: >
       {{ state_attr('sensor.template_updates', 'home_assistant') == 1 }}
-    action:
-      - service: homeassistant.update_entity
+    actions:
+      - action: homeassistant.update_entity
         target:
           entity_id:
             - sensor.hass_release_notes
             - sensor.hass_release_notes_beta
       - delay:
           minutes: 15
-      - service: notify.mobile_app_iphone
+      - action: notify.mobile_app_iphone
         data:
           title: >
             {% set installed = states('sensor.current_version') %}
@@ -110,13 +110,13 @@ automation:
 
   - alias: ios_notify_hass_update_action
     id: '0694774018396'
-    trigger:
-      platform: event
+    triggers:
+      trigger: event
       event_type: mobile_app_notification_action
       event_data:
         action: START_WATCHTOWER
-    action:
-      service: switch.turn_on
+    actions:
+      action: switch.turn_on
       target:
         entity_id: switch.docker_watchtower
 
@@ -124,11 +124,11 @@ automation:
     id: '5814485236724'
     mode: parallel
     max: 10
-    trigger:
-      platform: event
+    triggers:
+      trigger: event
       event_type: transmission_downloaded_torrent
-    action:
-      - service: notify.all_devices
+    actions:
+      - action: notify.all_devices
         data:
           title: Torrent nedladdad
           message: >
@@ -140,12 +140,12 @@ automation:
 
   - alias: sleep_notify_completed_torrent
     id: '0468306222206'
-    trigger:
-      platform: event
+    triggers:
+      trigger: event
       event_type: mobile_app_notification_action
       event_data:
         action: SLEEP_TORRENT
-    action:
+    actions:
       - service: input_datetime.set_datetime
         target:
           entity_id: input_datetime.sleep_notify_torrent
@@ -153,17 +153,17 @@ automation:
           datetime: >
             {{ as_local(state_attr('automation.notify_completed_torrent',
             'last_triggered') + timedelta(days=1)) }}
-      - service: automation.turn_off
+      - action: automation.turn_off
         target:
           entity_id: automation.notify_completed_torrent
 
   - alias: datetime_notify_completed_torrent
     id: '9998894466715'
-    trigger:
-      platform: time
+    triggers:
+      trigger: time
       at: input_datetime.sleep_notify_torrent
-    action:
-      service: automation.turn_on
+    actions:
+      action: automation.turn_on
       target:
         entity_id: automation.notify_completed_torrent
 
@@ -171,11 +171,11 @@ automation:
     id: '2046215097181'
     mode: parallel
     max: 25
-    trigger:
-      platform: event
+    triggers:
+      trigger: event
       event_type: transmission_downloaded_torrent
-    action:
-      - service: transmission.stop_torrent
+    actions:
+      - action: transmission.stop_torrent
         data:
           entry_id: >
             {{ config_entry_id('sensor.transmission_status') }}
@@ -183,12 +183,12 @@ automation:
             {{ trigger.event.data.id }}
       - delay:
           minutes: 1
-      - service: homeassistant.update_entity
+      - action: homeassistant.update_entity
         target:
           entity_id: sensor.plex_recently_added
       - delay:
           minutes: 10
-      - service: transmission.remove_torrent
+      - action: transmission.remove_torrent
         data:
           entry_id: >
             {{ config_entry_id('sensor.transmission_status') }}

@@ -55,12 +55,14 @@ light:
         if (entity) {
             // if light group get brightness from child to remove bounce
             let child = entity.attributes.entity_id,
-                brightness = child && states[child[0]].attributes.brightness
-                    ? Math.round(states[child[0]].attributes.brightness / 2.54)
-                    : Math.round(entity.attributes.brightness / 2.54);
+                raw = child && states[child[0]]?.attributes?.brightness != null
+                    ? states[child[0]].attributes.brightness
+                    : entity.attributes.brightness;
+            if (raw == null) return undefined;
+            let brightness = Math.round(raw / 2.54);
             return brightness === 0 && entity.state !== 'off'
                 ? 1
-                : brightness
+                : brightness;
         }
       ]]]
     circle_input_unit: '%'

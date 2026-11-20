@@ -9,64 +9,66 @@ homeassistant:
 template:
   - sensor:
       - unique_id: vacuum_filter
+        default_entity_id: sensor.template_vacuum_filter
+        name: Filter
+        icon: cil:roborock-filter
+        unit_of_measurement: '%'
         state: >
           {% set entity_id = 'sensor.morty_filter_left' %}
           {{ (states(entity_id) | int(default=0) / 5400) | int(default=0) }}
-        attributes:
-          friendly_name: Filter
-          icon: cil:roborock-filter
-          unit_of_measurement: '%'
 
       - unique_id: vacuum_mainbrush
+        default_entity_id: sensor.template_vacuum_mainbrush
+        name: Huvudborste
+        icon: cil:roborock-mainbrush
+        unit_of_measurement: '%'
         state: >
           {% set entity_id = 'sensor.morty_main_brush_left' %}
           {{ (states(entity_id) | int(default=0) / 10800) | int(default=0) }}
-        attributes:
-          friendly_name: Huvudborste
-          icon: cil:roborock-mainbrush
-          unit_of_measurement: '%'
 
       - unique_id: vacuum_sensors
+        default_entity_id: sensor.template_vacuum_sensors
+        name: Sensorer
+        icon: cil:roborock-sensor
+        unit_of_measurement: '%'
         state: >
           {% set entity_id = 'sensor.morty_sensor_dirty_left' %}
           {{ (states(entity_id) | int(default=0) / 1080) | int(default=0) }}
-        attributes:
-          friendly_name: Sensorer
-          icon: cil:roborock-sensor
-          unit_of_measurement: '%'
 
       - unique_id: vacuum_sidebrush
+        default_entity_id: sensor.template_vacuum_sidebrush
+        name: Sidoborste
+        icon: cil:roborock-sidebrush
+        unit_of_measurement: '%'
         state: >
           {% set entity_id = 'sensor.morty_side_brush_left' %}
           {{ (states(entity_id) | int(default=0) / 7200) | int(default=0) }}
-        attributes:
-          friendly_name: Sidoborste
-          icon: cil:roborock-sidebrush
-          unit_of_measurement: '%'
 
 automation:
   - alias: vacuum_empty_bin
     id: '5443599527378'
     variables:
       vacuum: vacuum.morty
-    trigger:
-      platform: state
-      entity_id: sensor.morty_total_clean_count
-    condition: >
-      {{ not is_state(vacuum, 'docked') }}
-    action:
+    triggers:
+      - trigger: state
+        entity_id: sensor.morty_total_clean_count
+    conditions:
+      - condition: template
+        value_template: >
+          {{ not is_state(vacuum, 'docked') }}
+    actions:
       - delay:
           seconds: 2
       - if: >
           {{ is_state(vacuum, 'returning') }}
         then:
-          - service: vacuum.pause
+          - action: vacuum.pause
             target:
               entity_id: >
                 {{ vacuum }}
           - delay:
               seconds: 2
-          - service: xiaomi_miio.vacuum_goto
+          - action: xiaomi_miio.vacuum_goto
             target:
               entity_id: >
                 {{ vacuum }}

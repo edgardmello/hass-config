@@ -2,19 +2,12 @@ homeassistant:
   customize:
     sensor.nas_volume_1_average_disk_temp:
       friendly_name: Disktemperatur
-    sensor.processor_use_percent:
+    sensor.system_monitor_processor_use:
       icon: mdi:chip
 
+# Note: `sensor: - platform: systemmonitor` was removed in HA 2024.9.
+# Configure the System Monitor integration via Settings -> Devices & Services -> Add Integration -> System Monitor.
 sensor:
-  - platform: systemmonitor
-    resources:
-      - type: disk_use_percent
-        arg: /
-      - type: memory_use_percent
-      - type: processor_use
-      - type: last_boot
-    scan_interval: 120
-
   # https://github.com/NemesisRE/sensor.plex_recently_added
   - platform: plex_recently_added
     host: !secret nas_host
@@ -27,6 +20,9 @@ sensor:
 template:
   - sensor:
       - unique_id: nas_status
+        default_entity_id: sensor.template_nas_status
+        name: Systemhälsa
+        icon: cil:synology-nas
         state: >
           {% set entity_id = 'sensor.nas_volume_1_status' %}
           {% if is_state(entity_id, 'normal') %}
@@ -36,11 +32,10 @@ template:
           {% else %}
             {{ states(entity_id) }}
           {% endif %}
-        attributes:
-          friendly_name: Systemhälsa
-          icon: cil:synology-nas
 
       - unique_id: domain_counter
+        default_entity_id: sensor.template_domain_counter
+        name: Domain Counter
         state: >
           {{ states | count }}
         attributes:
@@ -59,7 +54,7 @@ template:
           switch: >
             {{ states.switch | count }}
           other: >
-            {% set exclude = this.attributes | list %}
+            {% set exclude = ['automation', 'binary_sensor', 'device_tracker', 'light', 'media_player', 'sensor', 'switch'] %}
             {{ states | rejectattr('domain', 'in', exclude) | list | count }}
 
 shell_command:
@@ -79,18 +74,20 @@ monitor_docker:
 automation:
   - alias: purge_log_filesize
     id: '3331821824310'
-    trigger:
-      platform: numeric_state
-      entity_id: sensor.home_assistant_log_size
-      above: 50
-    action:
-      service: shell_command.purge_log
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.home_assistant_log_size
+        above: 50
+    actions:
+      - action: shell_command.purge_log
 
   - alias: backup_ha_monthly
-    trigger:
-      platform: time
-      at: 04:00:00
-    condition: >
-      {{ now().day == 1 }}
-    action:
-      service: backup.create
+    triggers:
+      - trigger: time
+        at: '04:00:00'
+    conditions:
+      - condition: template
+        value_template: >
+          {{ now().day == 1 }}
+    actions:
+      - action: backup.create

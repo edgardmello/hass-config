@@ -41,9 +41,9 @@ browser_mod:
               latest: sensor.docker_hub
               latest_beta: sensor.docker_hub_beta
             tap_action:
-              action: call-service
-              service: browser_mod.sequence
-              service_data:
+              action: perform-action
+              perform_action: browser_mod.sequence
+              data:
                 sequence:
                   - service: browser_mod.notification
                     data:
@@ -74,9 +74,9 @@ browser_mod:
                     : 'hacs_iframe';
                 ]]]
             hold_action:
-              action: call-service
-              service: browser_mod.sequence
-              service_data:
+              action: perform-action
+              perform_action: browser_mod.sequence
+              data:
                 sequence:
                   - service: browser_mod.notification
                     data:

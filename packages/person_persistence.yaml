@@ -36,8 +36,8 @@ automation:
   - alias: person_home
     id: '8423590985012'
     mode: parallel
-    trigger:
-      platform: state
+    triggers:
+      trigger: state
       entity_id:
         - person.matte
         - person.sanja
@@ -47,8 +47,8 @@ automation:
       to:
         - home
         - not_home
-    action:
-      service: mqtt.publish
+    actions:
+      action: mqtt.publish
       data:
         topic: >
           homeassistant/persistence/{{ trigger.to_state.name | lower }}

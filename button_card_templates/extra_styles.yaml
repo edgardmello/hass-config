@@ -1,12 +1,13 @@
 extra_styles:
   extra_styles: >
     [[[
+      var light_color = 'var(--button-card-light-color)';
       if (entity) {
           if (entity.entity_id.split('.')[0] === 'light' && variables.state_on) {
 
               // theme variable and conditions
               let style = getComputedStyle(document.body),
-                  theme_var = style.getPropertyValue('--button-card-light-color-temp'),
+                  theme_var = style.getPropertyValue('--button-card-light-color-temp').trim(),
                   is_hsl = theme_var.startsWith('hsl('),
                   is_color_temp = entity.attributes.color_mode === 'color_temp';
 
@@ -14,19 +15,20 @@ extra_styles:
 
                   // calculate lightness in hsl
                   let regex_pattern = /(\d+)(?!.*\d)/g,
-                      brightness = entity.attributes.brightness / 2.54,
-                      lightness = parseFloat(theme_var.match(regex_pattern)[0]),
-                      min = lightness - 10,
-                      max = lightness + 10,
-                      calc_lightness = brightness * (max - min) / 100 + min;
+                      match = theme_var.match(regex_pattern),
+                      brightness = entity.attributes.brightness / 2.54;
+                  if (match) {
+                      let lightness = parseFloat(match[0]),
+                          min = lightness - 10,
+                          max = lightness + 10,
+                          calc_lightness = brightness * (max - min) / 100 + min;
 
-                  var light_color = theme_var.replace(regex_pattern, calc_lightness);
-              }
-              else {
-                  var light_color = 'var(--button-card-light-color)';
+                      light_color = theme_var.replace(regex_pattern, calc_lightness);
+                  }
               }
           }
       }
+      let tpl = this._config?.template || [];
       return `
 
        /* * * * * * * * * * * * * * * * * *
@@ -37,9 +39,9 @@ extra_styles:
 
         svg {
           --light-color: ${
-            variables.state_on && entity.attributes.brightness
+            variables.state_on && entity?.attributes?.brightness
                 ? light_color
-                : variables.state_on && !entity.attributes.brightness
+                : variables.state_on && !entity?.attributes?.brightness
                     ? 'var(--state-icon-active-color);'
                     : 'var(--state-icon-color);' }
         }
@@ -55,7 +57,7 @@ extra_styles:
           --card-phone: 2.271;
         }
 
-        ${this._config.template.includes('light') ? `
+        ${tpl.includes('light') ? `
 
          /* * * * * * * * * * * * * * * * * *
           *                                 *

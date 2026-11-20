@@ -4,7 +4,6 @@ homeassistant:
   longitude: !secret homeassistant_longitude
   elevation: !secret homeassistant_elevation
   unit_system: metric
-  temperature_unit: C
   time_zone: Europe/Stockholm
   language: sv
   country: SE
@@ -61,8 +60,3 @@ logger:
     custom_components.monitor_docker.helpers: error
     homeassistant.setup: error
 
-sensor:
-  - platform: time_date
-    display_options:
-      - time
-      - date

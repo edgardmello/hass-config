@@ -23,40 +23,50 @@ rest:
 template:
   - sensor:
       - unique_id: hass_next_release
+        default_entity_id: sensor.template_hass_next_release
+        icon: mdi:dev-to
+        device_class: timestamp
+        name: >
+          {% set release = state_attr('calendar.home_assistant_devs','message') %}
+          {% if release == 'Home Assistant Core Beta Release' %}
+            Nästa beta
+          {% elif release == 'Home Assistant Core Release' %}
+            Nästa release
+          {% else %}
+            {{ release or 'Nästa release' }}
+          {% endif %}
         state: >
           {% set start_time = state_attr('calendar.home_assistant_devs', 'start_time') %}
-          {{ (as_timestamp(start_time, default=0) + 60*60*20.5) | timestamp_local(default) }}
-        attributes:
-          friendly_name: >
-            {% set release = state_attr('calendar.home_assistant_devs','message') %}
-            {% if release == 'Home Assistant Core Beta Release' %}
-              Nästa beta
-            {% elif release == 'Home Assistant Core Release' %}
-              Nästa release
-            {% else %}
-              {{ release }}
-            {% endif %}
-          icon: mdi:dev-to
-          device_class: timestamp
+          {% if start_time %}
+            {{ (as_timestamp(start_time, default=0) + 60*60*20.5) | timestamp_local(none) }}
+          {% else %}
+            {{ none }}
+          {% endif %}
 
       - unique_id: updates
+        default_entity_id: sensor.template_updates
+        name: Updates
         state: >
-          {{ this.attributes.values() | sum }}
+          {{ this.attributes.values() | select('number') | sum }}
         attributes:
           home_assistant: >
             {% set installed = states('sensor.current_version') %}
-            {% set latest = states('sensor.docker_hub_beta') if version(installed).beta else states('sensor.docker_hub') %}
-            {{ iif(version(latest) > version(installed) and '.' in installed and '.' in latest, 1, 0) }}
+            {% set latest = states('sensor.docker_hub_beta') if '.' in installed and version(installed).beta else states('sensor.docker_hub') %}
+            {{ iif('.' in installed and '.' in latest and version(latest) > version(installed), 1, 0) }}
           update_entities: >
             {{ states.update | selectattr('state','eq','on') | list | count }}
           other_updates: >
             {{ states('sensor.template_other_updates') | int(0) }}
 
       - unique_id: other_updates
+        default_entity_id: sensor.template_other_updates
+        name: Other Updates
         state: >
           {% set ns = namespace(list=[]) %}
           {% for k, v in this.attributes | dictsort(by='value') %}
-            {% set ns.list = ns.list + [v] if v != '' else [] %}
+            {% if k != 'friendly_name' and v != '' %}
+              {% set ns.list = ns.list + [v] %}
+            {% endif %}
           {% endfor %}
           {{ ns.list | count }}
         attributes:

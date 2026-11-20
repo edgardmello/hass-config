@@ -142,8 +142,8 @@ browser_mod:
                   entity: vacuum.morty
                   icon: mdi:play-pause
                   tap_action:
-                    action: call-service
-                    service: >
+                    action: perform-action
+                    perform_action: >
                       [[[
                         return `[[[
                           return entity.state === 'docked' || entity.state === 'paused'
@@ -159,18 +159,18 @@ browser_mod:
                   entity: vacuum.morty
                   icon: mdi:battery-charging
                   tap_action:
-                    action: call-service
-                    service: vacuum.return_to_base
-                    service_data:
+                    action: perform-action
+                    perform_action: vacuum.return_to_base
+                    data:
                       entity_id: vacuum.morty
                   template: icon_only
 
                 - type: custom:button-card
                   icon: mdi:delete-empty
                   tap_action:
-                    action: call-service
-                    service: vacuum.send_command
-                    service_data:
+                    action: perform-action
+                    perform_action: vacuum.send_command
+                    data:
                       entity_id: vacuum.morty
                       command: app_goto_target
                       params: [16821,23105]

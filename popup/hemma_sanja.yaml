@@ -70,9 +70,9 @@ browser_mod:
                 icon: mdi:volume-high
                 template: icon_name
                 tap_action:
-                  action: call-service
-                  service: notify.mobile_app_sanja_iphone_13
-                  service_data:
+                  action: perform-action
+                  perform_action: notify.mobile_app_sanja_iphone_13
+                  data:
                     title: Hitta min iPhone
                     message: Här är jag
                     data:

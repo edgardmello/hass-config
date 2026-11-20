@@ -65,12 +65,16 @@ updates_hass:
               hass_release_notes_beta = states[variables.release_notes_beta];
 
           let latest = installed.includes('b')
-              ? hass_version_latest_beta.state
-              : hass_version_latest.state;
+              ? hass_version_latest_beta?.state
+              : hass_version_latest?.state;
 
-          let release_notes = installed.includes('b')
-              ? marked.parse(hass_release_notes.attributes.body)
-              : marked.parse(hass_release_notes_beta.attributes.body);
+          let body = installed.includes('b')
+              ? hass_release_notes?.attributes?.body || ''
+              : hass_release_notes_beta?.attributes?.body || '';
+
+          let release_notes = typeof marked !== 'undefined' && body
+              ? marked.parse(body)
+              : body;
 
           let subtitle = available === 0
               ? `${variables.translate_no_updates} <b>&larr;</b> ${installed}`
@@ -95,8 +99,8 @@ updates_hass_icon_name:
     card:
       - opacity: >
           [[[
-            return entity && (entity.state === states[variables.latest].state ||
-              entity.state === states[variables.latest_beta].state)
+            return entity && (entity.state === states[variables.latest]?.state ||
+              entity.state === states[variables.latest_beta]?.state)
                 ? '0.3'
                 : '1';
           ]]]
@@ -116,9 +120,9 @@ updates:
       // variables
       let output = '',
           updates = states[variables.updates],
-          hacs_installed = states[variables.hacs_installed]?.attributes.repositories,
+          hacs_installed = states[variables.hacs_installed]?.attributes?.repositories,
           other_updates = states[variables.other_updates],
-          hacs_update = states['update.hacs_update']?.attributes.installed_version,
+          hacs_update = states['update.hacs_update']?.attributes?.installed_version,
           no_updates = variables.translate_no_updates,
           update_available = variables.translate_update_available,
           updates_available = variables.translate_updates_available;
@@ -132,21 +136,21 @@ updates:
       // update entities
       Object.keys(states).forEach(key => {
         let s = states[key], e = s.entity_id, a = s.attributes;
-        if (e.includes('update.') && s.state === 'on') {
-            output += `<li><b><a href="#" onclick="window.open('${a.release_url}');">
+        if (e.startsWith('update.') && s.state === 'on') {
+            output += `<li><b><a href="#" onclick="window.open('${a.release_url || '#'}');">
             ${rename(a)}</a></b> ${a.installed_version} <b>&rarr;</b> ${a.latest_version}</li>`
         }
       });
 
       // other updates
       let attr = Object.fromEntries(
-          Object.entries(other_updates?.attributes).filter(([, value]) => value != false));
+          Object.entries(other_updates?.attributes || {}).filter(([, value]) => value != false));
       for (const [, value] of Object.entries(attr)) {
         output += `<li>${value}</li>`;
       }
 
       // subtitle
-      let count = updates?.attributes.update_entities + updates?.attributes.other_updates,
+      let count = (updates?.attributes?.update_entities || 0) + (updates?.attributes?.other_updates || 0),
           subtitle = count === 0
               ? `${no_updates} <b>&larr;</b> ${hacs_update || ''}`
               : `${count} ${count === 1 ? update_available : updates_available} ${String.fromCodePoint('0x1f389')}`;

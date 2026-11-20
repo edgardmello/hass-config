@@ -11,19 +11,19 @@ automation:
   - alias: mailbox_count
     id: '2878459556162'
     mode: restart
-    trigger:
-      platform: state
+    triggers:
+      trigger: state
       entity_id:
         - binary_sensor.mailbox_count_contact
         - binary_sensor.mailbox_reset_contact
       from: 'off'
       to: 'on'
-    condition: >
+    conditions: >
       {% set now = as_timestamp(now()) %}
       {% set last_triggered = as_timestamp(state_attr(this.entity_id, 'last_triggered'), default=now) %}
       {{ (now - last_triggered) > 7 or 'reset' in trigger.entity_id }}
-    action:
-      service: mqtt.publish
+    actions:
+      action: mqtt.publish
       data:
         topic: homeassistant/persistence/mailbox
         payload_template: >

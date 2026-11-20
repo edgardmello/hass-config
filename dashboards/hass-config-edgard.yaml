@@ -1,0 +1,1895 @@
+title: Hass Config
+button_card_templates:
+  settings:
+    variables:
+      translate_unknown: Desconhecido
+      translate_idle: Ocioso
+      translate_home: Em casa
+      translate_not_home: Fora
+      translate_on: Ligado
+      translate_off: Desligado
+      translate_cool: Resfriando
+      translate_heat: Aquecendo
+      translate_dry: Desumidif.
+      translate_auto: Auto
+      translate_fan_only: Ventilar
+      translate_playing: Tocando
+      translate_paused: Pausado
+      translate_standby: Standby
+      translate_locked: Trancada
+      translate_unlocked: Destrancada
+  extra_styles:
+    extra_styles: "[[[\n  var light_color = 'var(--button-card-light-color, #3182b7)';\n  if (entity) {\n      if (entity.entity_id.split('.')[0]\
+      \ === 'light' && variables.state_on) {\n          let theme_var = 'hsl(204, 58%, 38%)',\n              is_color_temp\
+      \ = entity.attributes.color_mode === 'color_temp';\n          if (is_color_temp && entity.attributes.brightness) {\n\
+      \              let regex_pattern = /(\\d+)(?!.*\\d)/g,\n                  match = theme_var.match(regex_pattern),\n\
+      \                  brightness = entity.attributes.brightness / 2.54;\n              if (match) {\n                 \
+      \ let lightness = parseFloat(match[0]),\n                      calc_lightness = brightness * 20 / 100 + (lightness -\
+      \ 10);\n                  light_color = theme_var.replace(regex_pattern, calc_lightness);\n              }\n       \
+      \   }\n      }\n  }\n  let tpl = Array.isArray(this._config?.template)\n      ? this._config.template\n      : [this._config?.template\
+      \ || ''];\n  return `\n    :host {\n      --state-icon-color: #9da0a2;\n      --state-icon-active-color: #3182b7;\n\
+      \      --button-card-font-size: 1.32vw;\n      --button-card-font-weight: 500;\n      --button-card-letter-spacing:\
+      \ -0.02vw;\n      --button-card-border-radius: 10%;\n      --footer-card-font-size: 1.15vw;\n      --footer-card-icon-size:\
+      \ 1.45vw;\n      --footer-card-padding-v: 0.7vw;\n      --footer-card-padding-h: 1.15vw;\n      --footer-card-border-radius:\
+      \ 0.65vw;\n      --footer-notify-font-size: 0.85vw;\n      --footer-notify-box-size: 1.75vw;\n      --footer-notify-top:\
+      \ -0.75vw;\n      --footer-notify-right: -0.75vw;\n      --card-portrait: 1.4;\n      --card-phone: 2.25;\n      --ha-card-border-width:\
+      \ 0px;\n      --ha-card-box-shadow: none;\n      font-family: -apple-system, BlinkMacSystemFont, \"SF Pro Text\", Roboto,\
+      \ system-ui, sans-serif;\n    }\n\n    svg {\n      --light-color: ${\n        variables.state_on && entity?.attributes?.brightness\n\
+      \            ? light_color\n            : variables.state_on\n                ? '#3182b7'\n                : '#9da0a2'\n\
+      \      };\n    }\n\n    .light-color {\n      fill: var(--light-color);\n      transition: all 0.25s ease-out;\n   \
+      \ }\n\n    #container {\n      text-align: left !important;\n      z-index: 1;\n    }\n\n    #card {\n      padding:\
+      \ 10.9% 9.9% 8.9% 10.9%;\n      box-shadow: none !important;\n      border-width: 0 !important;\n    }\n\n    #state::first-letter\
+      \ {\n      text-transform: uppercase;\n    }\n\n    #name, #state {\n      font-size: var(--button-card-font-size);\n\
+      \      font-weight: var(--button-card-font-weight);\n      letter-spacing: var(--button-card-letter-spacing);\n    }\n\
+      \n    @media screen and (max-width: 1200px) {\n      #name, #state {\n        font-size: calc(var(--button-card-font-size)\
+      \ * var(--card-portrait));\n      }\n    }\n    @media screen and (max-width: 800px) {\n      #name, #state {\n    \
+      \    font-size: calc(var(--button-card-font-size) * var(--card-phone));\n      }\n    }\n\n    ${tpl.includes('light')\
+      \ ? `\n      #circle_slider {\n        opacity: 0;\n        appearance: none;\n        transform: rotate(270deg);\n\
+      \        width: 90%;\n        position: absolute;\n        pointer-events: none;\n        cursor: grab;\n        left:\
+      \ 26%;\n        margin-top: 13%;\n      }\n      #circle_slider::-webkit-slider-thumb {\n        pointer-events: initial;\n\
+      \        appearance: none;\n        width: 3vw;\n        height: 3vw;\n        border-radius: 50%;\n      }\n    ` :\
+      \ ''}\n\n    ${tpl.includes('conditional_media') ? `\n      :host {\n        --blur-intensity: blur(4.5px) brightness(0.75);\n\
+      \      }\n      @media screen and (max-width: 800px) {\n        :host {\n          --blur-intensity: blur(2.5px) brightness(0.75);\n\
+      \        }\n      }\n      #container {\n        overflow: hidden;\n      }\n      .marquee {\n        animation: marquee\
+      \ 20s linear infinite;\n      }\n      @keyframes marquee {\n        from { transform: translateX(0%); }\n        to\
+      \ { transform: translateX(-50%); }\n      }\n    ` : ''}\n\n    ${tpl.includes('footer') ? `\n      :host {\n      \
+      \  --footer-portrait: 1.4;\n        --footer-phone: 2.7;\n      }\n      #name {\n        font-size: var(--footer-card-font-size);\n\
+      \        padding: var(--footer-card-padding-v) var(--footer-card-padding-h);\n        letter-spacing: 0.04vw;\n    \
+      \  }\n      ha-icon {\n        width: var(--footer-card-icon-size);\n        vertical-align: -12%;\n        padding-right:\
+      \ 0.25vw;\n        opacity: 0.55;\n      }\n      #card {\n        padding: 0 !important;\n        border-radius: var(--footer-card-border-radius)\
+      \ !important;\n        background: rgba(115, 115, 115, 0.14) !important;\n        border: 1px solid rgba(155, 165, 170,\
+      \ 0.18) !important;\n      }\n      #card:hover {\n        background: rgba(150, 160, 165, 0.24) !important;\n     \
+      \ }\n      #notify {\n        font-size: var(--footer-notify-font-size);\n        width: var(--footer-notify-box-size);\n\
+      \        height: var(--footer-notify-box-size);\n        line-height: var(--footer-notify-box-size);\n        top: var(--footer-notify-top);\n\
+      \        right: var(--footer-notify-right);\n      }\n      @media screen and (max-width: 1200px) {\n        #name {\n\
+      \          font-size: calc(var(--footer-card-font-size) * var(--footer-portrait));\n          padding: calc(var(--footer-card-padding-v)\
+      \ * var(--footer-portrait)) calc(var(--footer-card-padding-h) * var(--footer-portrait));\n        }\n        ha-icon\
+      \ {\n          width: calc(var(--footer-card-icon-size) * var(--footer-portrait));\n        }\n        #card {\n   \
+      \       border-radius: calc(var(--footer-card-border-radius) * var(--footer-portrait)) !important;\n          margin:\
+      \ 0.4vw 0.5vw;\n        }\n        #notify {\n          font-size: calc(var(--footer-notify-font-size) * var(--footer-portrait));\n\
+      \          width: calc(var(--footer-notify-box-size) * var(--footer-portrait));\n          height: calc(var(--footer-notify-box-size)\
+      \ * var(--footer-portrait));\n          line-height: calc(var(--footer-notify-box-size) * var(--footer-portrait));\n\
+      \        }\n      }\n      @media screen and (max-width: 800px) {\n        #name {\n          font-size: calc(var(--footer-card-font-size)\
+      \ * var(--footer-phone));\n          padding: calc(var(--footer-card-padding-v) * var(--footer-phone)) calc(var(--footer-card-padding-h)\
+      \ * var(--footer-phone));\n        }\n        ha-icon {\n          width: calc(var(--footer-card-icon-size) * var(--footer-phone));\n\
+      \        }\n        #card {\n          border-radius: calc(var(--footer-card-border-radius) * var(--footer-phone)) !important;\n\
+      \          margin: 1vw;\n        }\n        #notify {\n          font-size: calc(var(--footer-notify-font-size) * var(--footer-phone));\n\
+      \          width: calc(var(--footer-notify-box-size) * var(--footer-phone));\n          height: calc(var(--footer-notify-box-size)\
+      \ * var(--footer-phone));\n          line-height: calc(var(--footer-notify-box-size) * var(--footer-phone));\n     \
+      \     top: -1.6vw;\n          right: -1.6vw;\n        }\n      }\n    ` : ''}\n  `;\n]]]"
+  base:
+    template:
+    - settings
+    - extra_styles
+    variables:
+      state_on: '[[[ return [''on'', ''home'', ''cool'', ''heat'', ''dry'', ''auto'', ''fan_only'', ''playing'', ''unlocked''].indexOf(!entity
+        || entity.state) !== -1; ]]]'
+      state: '[[[ return !entity || entity.state; ]]]'
+      entity_id: '[[[ return !entity || entity.entity_id; ]]]'
+      entity_picture: '[[[ return !entity || entity.attributes.entity_picture; ]]]'
+      timeout: '[[[ return !entity || Date.now() - Date.parse(entity.last_changed); ]]]'
+    aspect_ratio: 1/1
+    show_state: true
+    show_icon: false
+    state_display: "[[[\n  const stateDict = {\n    'on': variables.translate_on,\n    'off': variables.translate_off,\n \
+      \   'cool': variables.translate_cool,\n    'heat': variables.translate_heat,\n    'dry': variables.translate_dry,\n\
+      \    'auto': variables.translate_auto,\n    'fan_only': variables.translate_fan_only,\n    'playing': variables.translate_playing,\n\
+      \    'paused': variables.translate_paused,\n    'idle': variables.translate_idle,\n    'standby': variables.translate_standby,\n\
+      \    'locked': variables.translate_locked,\n    'unlocked': variables.translate_unlocked,\n  };\n  if (variables.state\
+      \ === true) return variables.translate_unknown;\n  return stateDict[variables.state] ?? variables.state;\n]]]"
+    tap_action:
+      card_bounce: "[[[\n  if (this.getElementsByTagName(\"style\").length === 0) {\n      let mq = window.matchMedia('(max-width:\
+        \ 800px)').matches;\n      let style = document.createElement('style');\n      style.innerHTML = `\n          @keyframes\
+        \ card_bounce {\n              0%   { transform: scale(1); }\n              10%  { transform: scale(${ mq ? '0.92'\
+        \ : '0.94' }); }\n              25%  { transform: scale(1); }\n              30%  { transform: scale(${ mq ? '0.96'\
+        \ : '0.98' }); }\n              100% { transform: scale(1); }\n          }\n      `;\n      this.appendChild(style);\n\
+        \  }\n  let duration = 800;\n  this.style.animation = `card_bounce ${duration}ms cubic-bezier(0.22, 1, 0.36, 1)`;\n\
+        \  window.setTimeout(() => { this.style.animation = \"none\"; }, duration + 100);\n]]]"
+      action: toggle
+      haptic: medium
+    double_tap_action:
+      action: more-info
+      haptic: success
+    hold_action:
+      action: more-info
+    styles:
+      grid:
+      - grid-template-areas: '"icon circle"
+
+          "n n"
+
+          "s s"'
+      - grid-template-columns: repeat(2, 1fr)
+      - grid-template-rows: auto repeat(2, min-content)
+      - gap: 1.3%
+      - align-items: start
+      - will-change: transform
+      name:
+      - justify-self: start
+      - line-height: 121%
+      state:
+      - justify-self: start
+      - line-height: 115%
+      card:
+      - border-radius: var(--button-card-border-radius, 10%)
+      - border-width: 0
+      - -webkit-tap-highlight-color: rgba(0,0,0,0)
+      - transition: background-color 0.25s ease, color 0.25s ease
+      - --mdc-ripple-color: '[[[ return variables.state_on ? ''rgb(0, 0, 0)'' : ''#97989c''; ]]]'
+      - color: '[[[ return variables.state_on ? ''#4b5254'' : ''#97989c''; ]]]'
+      - background-color: '[[[ return variables.state_on ? ''rgba(255, 255, 255, 0.85)'' : ''rgba(115, 115, 115, 0.25)'';
+          ]]]'
+  loader:
+    custom_fields:
+      loader: <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8c3R5bGU+CiAgICAubG9hZGVyIHsKCQkJZmlsbDogIzBlMTMxNTsKICAgIH0KICA8L3N0eWxlPgogIDxnIGNsYXNzPSJsb2FkZXIiPgogICAgPHJlY3QgeD0iNDgiIHk9IjIzLjUiIHJ4PSIuNzgiIHdpZHRoPSI0IiBoZWlnaHQ9IjEzIj4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIxOzAiIGtleVRpbWVzPSIwOzEiIGR1cj0iMS4yNjU4MjI3ODQ4MTAxMjY0cyIgYmVnaW49Ii0xLjE2MDMzNzU1Mjc0MjYxNnMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPgogICAgPC9yZWN0PgogIDwvZz4KICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgzMCA1MCA1MCkiIGNsYXNzPSJsb2FkZXIiPgogICAgPHJlY3QgeD0iNDgiIHk9IjIzLjUiIHJ4PSIuNzgiIHdpZHRoPSI0IiBoZWlnaHQ9IjEzIj4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIxOzAiIGtleVRpbWVzPSIwOzEiIGR1cj0iMS4yNjU4MjI3ODQ4MTAxMjY0cyIgYmVnaW49Ii0xLjA1NDg1MjMyMDY3NTEwNTVzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgLz4KICAgIDwvcmVjdD4KICA8L2c+CiAgPGcgdHJhbnNmb3JtPSJyb3RhdGUoNjAgNTAgNTApIiBjbGFzcz0ibG9hZGVyIj4KICAgIDxyZWN0IHg9IjQ4IiB5PSIyMy41IiByeD0iLjc4IiB3aWR0aD0iNCIgaGVpZ2h0PSIxMyI+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIHZhbHVlcz0iMTswIiBrZXlUaW1lcz0iMDsxIiBkdXI9IjEuMjY1ODIyNzg0ODEwMTI2NHMiIGJlZ2luPSItMC45NDkzNjcwODg2MDc1OTQ5cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIC8+CiAgICA8L3JlY3Q+CiAgPC9nPgogIDxnIHRyYW5zZm9ybT0icm90YXRlKDkwIDUwIDUwKSIgY2xhc3M9ImxvYWRlciI+CiAgICA8cmVjdCB4PSI0OCIgeT0iMjMuNSIgcng9Ii43OCIgd2lkdGg9IjQiIGhlaWdodD0iMTMiPgogICAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJvcGFjaXR5IiB2YWx1ZXM9IjE7MCIga2V5VGltZXM9IjA7MSIgZHVyPSIxLjI2NTgyMjc4NDgxMDEyNjRzIiBiZWdpbj0iLTAuODQzODgxODU2NTQwMDg0M3MiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPgogICAgPC9yZWN0PgogIDwvZz4KICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgxMjAgNTAgNTApIiBjbGFzcz0ibG9hZGVyIj4KICAgIDxyZWN0IHg9IjQ4IiB5PSIyMy41IiByeD0iLjc4IiB3aWR0aD0iNCIgaGVpZ2h0PSIxMyI+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIHZhbHVlcz0iMTswIiBrZXlUaW1lcz0iMDsxIiBkdXI9IjEuMjY1ODIyNzg0ODEwMTI2NHMiIGJlZ2luPSItMC43MzgzOTY2MjQ0NzI1NzM4cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIC8+CiAgICA8L3JlY3Q+CiAgPC9nPgogIDxnIHRyYW5zZm9ybT0icm90YXRlKDE1MCA1MCA1MCkiIGNsYXNzPSJsb2FkZXIiPgogICAgPHJlY3QgeD0iNDgiIHk9IjIzLjUiIHJ4PSIuNzgiIHdpZHRoPSI0IiBoZWlnaHQ9IjEzIj4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIxOzAiIGtleVRpbWVzPSIwOzEiIGR1cj0iMS4yNjU4MjI3ODQ4MTAxMjY0cyIgYmVnaW49Ii0wLjYzMjkxMTM5MjQwNTA2MzJzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgLz4KICAgIDwvcmVjdD4KICA8L2c+CiAgPGcgdHJhbnNmb3JtPSJyb3RhdGUoMTgwIDUwIDUwKSIgY2xhc3M9ImxvYWRlciI+CiAgICA8cmVjdCB4PSI0OCIgeT0iMjMuNSIgcng9Ii43OCIgd2lkdGg9IjQiIGhlaWdodD0iMTMiPgogICAgICA8YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJvcGFjaXR5IiB2YWx1ZXM9IjE7MCIga2V5VGltZXM9IjA7MSIgZHVyPSIxLjI2NTgyMjc4NDgxMDEyNjRzIiBiZWdpbj0iLTAuNTI3NDI2MTYwMzM3NTUyN3MiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPgogICAgPC9yZWN0PgogIDwvZz4KICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgyMTAgNTAgNTApIiBjbGFzcz0ibG9hZGVyIj4KICAgIDxyZWN0IHg9IjQ4IiB5PSIyMy41IiByeD0iLjc4IiB3aWR0aD0iNCIgaGVpZ2h0PSIxMyI+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIHZhbHVlcz0iMTswIiBrZXlUaW1lcz0iMDsxIiBkdXI9IjEuMjY1ODIyNzg0ODEwMTI2NHMiIGJlZ2luPSItMC40MjE5NDA5MjgyNzAwNDIxNXMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPgogICAgPC9yZWN0PgogIDwvZz4KICA8ZyB0cmFuc2Zvcm09InJvdGF0ZSgyNDAgNTAgNTApIiBjbGFzcz0ibG9hZGVyIj4KICAgIDxyZWN0IHg9IjQ4IiB5PSIyMy41IiByeD0iLjc4IiB3aWR0aD0iNCIgaGVpZ2h0PSIxMyI+CiAgICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIHZhbHVlcz0iMTswIiBrZXlUaW1lcz0iMDsxIiBkdXI9IjEuMjY1ODIyNzg0ODEwMTI2NHMiIGJlZ2luPSItMC4zMTY0NTU2OTYyMDI1MzE2cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIC8+CiAgICA8L3JlY3Q+CiAgPC9nPgogIDxnIHRyYW5zZm9ybT0icm90YXRlKDI3MCA1MCA1MCkiIGNsYXNzPSJsb2FkZXIiPgogICAgPHJlY3QgeD0iNDgiIHk9IjIzLjUiIHJ4PSIuNzgiIHdpZHRoPSI0IiBoZWlnaHQ9IjEzIj4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIxOzAiIGtleVRpbWVzPSIwOzEiIGR1cj0iMS4yNjU4MjI3ODQ4MTAxMjY0cyIgYmVnaW49Ii0wLjIxMDk3MDQ2NDEzNTAyMTA3cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIC8+CiAgICA8L3JlY3Q+CiAgPC9nPgogIDxnIHRyYW5zZm9ybT0icm90YXRlKDMwMCA1MCA1MCkiIGNsYXNzPSJsb2FkZXIiPgogICAgPHJlY3QgeD0iNDgiIHk9IjIzLjUiIHJ4PSIuNzgiIHdpZHRoPSI0IiBoZWlnaHQ9IjEzIj4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIxOzAiIGtleVRpbWVzPSIwOzEiIGR1cj0iMS4yNjU4MjI3ODQ4MTAxMjY0cyIgYmVnaW49Ii0wLjEwNTQ4NTIzMjA2NzUxMDU0cyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIC8+CiAgICA8L3JlY3Q+CiAgPC9nPgogIDxnIHRyYW5zZm9ybT0icm90YXRlKDMzMCA1MCA1MCkiIGNsYXNzPSJsb2FkZXIiPgogICAgPHJlY3QgeD0iNDgiIHk9IjIzLjUiIHJ4PSIuNzgiIHdpZHRoPSI0IiBoZWlnaHQ9IjEzIj4KICAgICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgdmFsdWVzPSIxOzAiIGtleVRpbWVzPSIwOzEiIGR1cj0iMS4yNjU4MjI3ODQ4MTAxMjY0cyIgYmVnaW49IjBzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgLz4KICAgIDwvcmVjdD4KICA8L2c+Cjwvc3ZnPgo="
+        width="100%">
+    tap_action:
+      loader: "[[[\n  if (entity) {\n      let elt = this.shadowRoot,\n          loader = (id, style) => {\n            let\
+        \ el = elt?.getElementById(id);\n            if (el) {\n              el.style.display = style;\n              window.setTimeout(()\
+        \ => {\n                let l = elt?.getElementById('loader');\n                if (l) l.style.display = 'none';\n\
+        \              }, 8000);\n            }\n          };\n      loader('circle', 'none');\n      loader('loader', 'initial');\n\
+        \  }\n]]]"
+    styles:
+      custom_fields:
+        loader:
+        - display: none
+        - top: -6%
+        - right: -3.5%
+        - width: 52%
+        - position: absolute
+        - opacity: 0.5
+        - pointer-events: none
+        - filter: '[[[ return variables.state_on ? ''none'' : ''invert(1)''; ]]]'
+  circle:
+    styles:
+      card:
+      - --c-stroke-color-on: '#b0b0b0'
+      - --c-stroke-color-off: none
+      - --c-fill-color-on: none
+      - --c-fill-color-off: rgba(255,255,255,0.04)
+      - --c-stroke-width: 2.3
+      - --c-stroke-width-dragging: 4
+      - --c-font-color: '#97989c'
+      - --c-font-size: 13.5px
+      - --c-unit-font-size: 9.5px
+      - --c-font-weight: 700
+      - --c-letter-spacing: -0.02rem
+      custom_fields:
+        circle:
+        - display: initial
+        - width: 88%
+        - margin: -3% 2% 0 0
+        - justify-self: end
+        - opacity: 1
+    custom_fields:
+      circle: "[[[\n  if (entity) {\n      let r = 22.1,\n          c = r * 2 * Math.PI,\n          tspan = '<tspan dx=\"\
+        .2\" dy=\"-.4\">',\n          domain = entity.entity_id.split('.')[0],\n          state = variables.state_on,\n  \
+        \        input = variables.circle_input,\n          unit = variables.circle_input_unit || ' ';\n\n      let circle\
+        \ = (st, val, u, pct) => {\n          let showSlider = domain === 'light' && typeof val === 'number' && !Number.isNaN(val);\n\
+        \          let dashPct = typeof pct === 'number' && !Number.isNaN(pct)\n              ? Math.max(0, Math.min(100,\
+        \ pct))\n              : (typeof val === 'number' && !Number.isNaN(val) ? Math.max(0, Math.min(100, val)) : 100);\n\
+        \          return `\n            <svg viewBox=\"0 0 50 50\">\n              <style>\n                circle {\n  \
+        \                transform: rotate(-90deg);\n                  transform-origin: 50% 50%;\n                  stroke-dasharray:\
+        \ ${c};\n                  stroke-dashoffset: ${c - dashPct / 100 * c};\n                  stroke-width: var(--c-stroke-width);\n\
+        \                  stroke: ${st ? 'var(--c-stroke-color-on)' : 'var(--c-stroke-color-off)'};\n                  fill:\
+        \ ${st ? 'var(--c-fill-color-on)' : 'var(--c-fill-color-off)'};\n                }\n                text {\n     \
+        \             font-size: var(--c-font-size);\n                  font-weight: var(--c-font-weight);\n             \
+        \     letter-spacing: var(--c-letter-spacing);\n                  fill: ${st ? '#4b5254' : 'var(--c-font-color)'};\n\
+        \                }\n                tspan {\n                  font-size: var(--c-unit-font-size);\n             \
+        \   }\n                #circle_value, tspan {\n                  text-anchor: middle;\n                  dominant-baseline:\
+        \ central;\n                }\n              </style>\n              <circle id=\"circle_stroke\" cx=\"25\" cy=\"\
+        25\" r=\"${r}\"/>\n              <text id=\"circle_value\" x=\"50%\" y=\"52%\">${val}${tspan}${u}</tspan></text>\n\
+        \            </svg>\n            ${showSlider ? `<input id=\"circle_slider\" type=\"range\" min=\"0\" max=\"100\"\
+        \ value=\"${val}\">` : ''}\n          `;\n      };\n\n      if (domain === 'light' && state && typeof input === 'number'\
+        \ && !Number.isNaN(input)) {\n          setTimeout(() => {\n              let elt = this.shadowRoot,\n           \
+        \       circle_slider = elt?.getElementById('circle_slider'),\n                  circle_value = elt?.getElementById('circle_value'),\n\
+        \                  circle_stroke = elt?.getElementById('circle_stroke');\n              if (!circle_slider || !circle_value\
+        \ || !circle_stroke) return;\n              circle_slider.style.top = `${(circle_slider.value - 50) / 1.66 - 1}%`;\n\
+        \              ['click', 'input', 'mousedown', 'mouseup', 'touchstart', 'touchend'].forEach((ev) => {\n          \
+        \        circle_slider.addEventListener(ev, function(event) {\n                      if (event.target === this) {\n\
+        \                          event.stopPropagation();\n                          circle_value.innerHTML = `${this.value}${tspan}${unit}</tspan>`;\n\
+        \                          circle_stroke.style.strokeDashoffset = c - this.value / 100 * c;\n                    \
+        \      circle_stroke.style.strokeWidth = 'var(--c-stroke-width-dragging)';\n                          if (event.type\
+        \ === 'mouseup' || event.type === 'touchend') {\n                              hass.callService('light', 'turn_on',\
+        \ {\n                                  entity_id: entity.entity_id,\n                                  brightness_pct:\
+        \ this.value\n                              });\n                          }\n                      }\n          \
+        \        }, { passive: true });\n              });\n          }, 0);\n          return circle(state, input, unit,\
+        \ input);\n      } else if (domain === 'person') {\n          let fmt = ms => {\n              let s = ms / 1e3, m\
+        \ = ms / 6e4, h = ms / 36e5, d = ms / 864e5;\n              return s < 60 ? parseInt(s) + 's' : m < 60 ? parseInt(m)\
+        \ + 'm' : h < 24 ? parseInt(h) + 'h' : parseInt(d) + 'd';\n          };\n          let diff = fmt(Math.max(0, Date.now()\
+        \ - Date.parse(entity.last_changed)));\n          return circle(state, diff, ' ', 100);\n      } else if (domain ===\
+        \ 'climate' && input != null && input !== '') {\n          return circle(state, input, unit, 100);\n      } else if\
+        \ (variables.circle_always && input != null && input !== '') {\n          return circle(state, input, unit, 100);\n\
+        \      } else if (variables.state_on && domain !== 'light' && input != null && input !== '') {\n          return circle(state,\
+        \ input, unit, 100);\n      }\n  }\n]]]"
+  light:
+    template:
+    - base
+    - circle
+    - loader
+    variables:
+      circle_input: "[[[\n  if (entity) {\n      let child = entity.attributes.entity_id,\n          raw = child && states[child[0]]?.attributes?.brightness\
+        \ != null\n              ? states[child[0]].attributes.brightness\n              : entity.attributes.brightness;\n\
+        \      if (raw == null) return undefined;\n      let brightness = Math.round(raw / 2.54);\n      return brightness\
+        \ === 0 && entity.state !== 'off' ? 1 : brightness;\n  }\n]]]"
+      circle_input_unit: '%'
+  person:
+    template:
+    - base
+    - circle
+    state_display: "[[[\n  if (entity) {\n      return variables.state === 'home'\n          ? variables.translate_home\n\
+      \          : variables.state === 'not_home'\n              ? variables.translate_not_home\n              : variables.state;\n\
+      \  }\n  return variables.translate_unknown;\n]]]"
+    triggers_update: all
+    tap_action:
+      action: more-info
+    styles:
+      custom_fields:
+        icon:
+        - clip-path: circle()
+        - width: 82%
+        - pointer-events: none
+        - display: grid
+    custom_fields:
+      icon: "[[[\n  if (entity && variables.entity_picture) {\n      return `<img src=\"${variables.entity_picture}\" width=\"\
+        100%\">`;\n  }\n  const initials = (entity?.attributes?.friendly_name || '?')\n      .split(' ').map(w => w[0]).slice(0,\
+        \ 2).join('').toUpperCase();\n  const bg = variables.state_on ? '#3182b7' : 'rgba(157,160,162,0.22)';\n  const fg\
+        \ = variables.state_on ? '#ffffff' : '#d2d6d8';\n  return `<svg viewBox=\"0 0 50 50\">\n    <circle cx=\"25\" cy=\"\
+        25\" r=\"25\" fill=\"${bg}\"/>\n    <text x=\"50%\" y=\"53%\" text-anchor=\"middle\" dominant-baseline=\"central\"\
+        \n      font-size=\"18\" font-weight=\"600\" fill=\"${fg}\">${initials}</text>\n  </svg>`;\n]]]"
+  base_media:
+    template:
+    - settings
+    variables:
+      media_on: '[[[ return !entity || [''playing'', ''paused'', ''on''].indexOf(entity.state) !== -1; ]]]'
+      media_off: '[[[ return !entity || [''off'', ''idle'', ''standby'', ''unknown'', ''unavailable''].indexOf(entity.state)
+        !== -1; ]]]'
+    tap_action:
+      action: '[[[ return variables.media_on ? ''perform-action'' : ''more-info''; ]]]'
+      perform_action: media_player.media_play_pause
+      data:
+        entity_id: '[[[ return variables.entity_id; ]]]'
+    double_tap_action:
+      action: more-info
+    styles:
+      card:
+      - color: "[[[\n  return variables.media_on && !variables.entity_picture\n      ? '#4b5254'\n      : variables.media_off\
+          \ ? '#97989c' : '#efefef';\n]]]"
+      - text-shadow: "[[[\n  return variables.media_off || !variables.entity_picture\n      ? 'none'\n      : '1px 1px 5px\
+          \ rgba(18, 22, 23, 0.9)';\n]]]"
+  media:
+    template:
+    - base
+    - base_media
+    styles:
+      custom_fields:
+        icon:
+        - width: 70%
+        - margin-left: 2%
+        - fill: '#9da0a2'
+        - display: "[[[\n  return variables.media_off || !variables.entity_picture ? 'initial' : 'none';\n]]]"
+      card:
+      - background-color: none
+      - background-size: cover
+      - background-position: center
+      - background-image: "[[[\n  return variables.media_on && !variables.entity_picture\n      ? 'linear-gradient(0deg, rgba(255,\
+          \ 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.85) 100%)'\n      : variables.media_off\n          ? 'linear-gradient(0deg,\
+          \ rgba(115, 115, 115, 0.25) 0%, rgba(115, 115, 115, 0.25) 100%)'\n          : `linear-gradient(0deg, rgba(0,0,0,.82)\
+          \ 0%, rgba(0,0,0,0) 100%), url(${variables.entity_picture})`;\n]]]"
+  conditional_media:
+    aspect_ratio: 1000/996
+    template:
+    - base
+    - base_media
+    - icon_play_pause
+    triggers_update: all
+    variables:
+      active_player: "[[[\n  const players = [\n    'media_player.tv_sala_androidtv',\n    'media_player.sala_echo_show_8',\n\
+        \    'media_player.suite_echo_dot_suite',\n    'media_player.google_home_escritorio',\n    'media_player.tv_samsung_suite',\n\
+        \    'media_player.todo_lugar'\n  ];\n  for (const p of players) {\n    if (states[p] && ['playing', 'paused'].includes(states[p].state))\
+        \ return states[p];\n  }\n  for (const p of players) {\n    if (states[p] && states[p].state === 'on') return states[p];\n\
+        \  }\n  return states['media_player.tv_sala_androidtv'] || entity;\n]]]"
+      state_on: '[[[ return [''playing'', ''paused'', ''on''].includes(variables.active_player?.state); ]]]'
+      media_on: '[[[ return [''playing'', ''paused'', ''on''].includes(variables.active_player?.state); ]]]'
+      media_off: '[[[ return ![''playing'', ''paused'', ''on''].includes(variables.active_player?.state); ]]]'
+      entity_picture: '[[[ return variables.active_player?.attributes?.entity_picture; ]]]'
+    name: '[[[ return variables.active_player?.attributes?.friendly_name || ''Mídia''; ]]]'
+    state_display: "[[[\n  const p = variables.active_player;\n  if (!p) return 'Ocioso';\n  const artist = p.attributes?.media_artist;\n\
+      \  const title = p.attributes?.media_title;\n  const app = p.attributes?.app_name;\n  if (artist && title) return `${artist}\
+      \ - ${title}`;\n  if (title) return title;\n  if (app) return app;\n  if (p.state === 'on') return 'Ligada';\n  if (p.state\
+      \ === 'playing') return 'Tocando';\n  if (p.state === 'paused') return 'Pausado';\n  return 'Nada tocando · Deslize\
+      \ →';\n]]]"
+    tap_action:
+      action: perform-action
+      perform_action: media_player.media_play_pause
+      data:
+        entity_id: '[[[ return variables.active_player?.entity_id || ''media_player.tv_sala_androidtv''; ]]]'
+    double_tap_action:
+      action: more-info
+    styles:
+      grid:
+      - gap: 0.65%
+      name:
+      - padding: 0.2vw
+      - margin: -0.2vw
+      state:
+      - padding-bottom: 5.25%
+      - max-width: unset
+      - overflow: hidden
+      - text-overflow: ellipsis
+      card:
+      - padding: 5.75% 5.25% 0 5.75%
+      - border-radius: calc(var(--button-card-border-radius, 10%) / 2)
+      - background: rgba(115, 115, 115, 0.25) center center/cover no-repeat
+      - background-image: "[[[\n  const pic = variables.entity_picture;\n  if (pic) return `linear-gradient(0deg, rgba(0,0,0,0.72)\
+          \ 0%, rgba(0,0,0,0.08) 55%, rgba(0,0,0,0.2) 100%), url(\"${pic}\")`;\n  if (variables.state_on) return 'radial-gradient(circle\
+          \ at 20% 20%, rgba(49,130,183,0.42), rgba(26,34,38,0.88))';\n  return 'radial-gradient(circle at 80% 20%, rgba(82,102,112,0.28),\
+          \ rgba(28,32,34,0.65))';\n]]]"
+      - color: '#efefef'
+      - text-shadow: 1px 1px 5px rgba(18, 22, 23, 0.9)
+      custom_fields:
+        icon:
+        - width: 28%
+        - fill: '[[[ return variables.state_on ? ''rgba(255, 255, 255, 0.85)'' : ''#9da0a2''; ]]]'
+        blur_overlay:
+        - display: block
+        - position: absolute
+        - width: 103.1%
+        - height: 103.1%
+        - clip-path: inset(74.5% 1.45% 1.45% 1.45% round 0 0 5% 5%)
+        - backdrop-filter: var(--blur-intensity)
+        - -webkit-backdrop-filter: var(--blur-intensity)
+        - left: -1.5%
+        - bottom: -1.6%
+    custom_fields:
+      blur_overlay: "[[[\n  setTimeout(() => {\n      let elt = this.shadowRoot,\n          card = elt?.getElementById('card'),\n\
+        \          container = elt?.getElementById('container'),\n          blur_overlay = elt?.getElementById('blur_overlay');\n\
+        \      if (elt && card && container && blur_overlay) {\n          card.insertBefore(blur_overlay, container);\n  \
+        \    }\n  }, 0);\n  return ' ';\n]]]"
+  sidebar:
+    show_state: false
+    show_icon: false
+    triggers_update: all
+    tap_action:
+      action: none
+    name: "[[[\n  const now = new Date();\n  const hh = String(now.getHours()).padStart(2, '0');\n  const mm = String(now.getMinutes()).padStart(2,\
+      \ '0');\n  const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];\n\
+      \  const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro',\
+      \ 'Novembro', 'Dezembro'];\n  const dateStr = `${days[now.getDay()]}<br>${now.getDate()} de ${months[now.getMonth()]}`;\n\
+      \n  const h = now.getHours();\n  let greet = 'Boa noite \U0001F60C';\n  if (h < 6) greet = 'Boa madrugada \U0001F634\
+      ';\n  else if (h < 12) greet = 'Bom dia ☕';\n  else if (h < 18) greet = 'Boa tarde \U0001F60E';\n\n  const lightIds\
+      \ = [\n    'light.sala_central', 'light.sala_led_sofa', 'light.sala_spot_sofa',\n    'light.sala_mesa_jantar', 'light.sala_entrada',\
+      \ 'light.sala_banh_social',\n    'light.cozinha_central', 'light.cozinha_bancada', 'light.cozinha_lavanderia',\n   \
+      \ 'light.escritorio_spot_escritorio_led', 'light.suite_ventilador',\n    'light.suite_closet', 'light.quarto_suite_banheiro_espelho',\n\
+      \    'light.hall_light_switch_top', 'light.hall_light_switch_bottom'\n  ];\n  const devIds = [\n    ['climate.escritorio_ar_condicionado',\
+      \ 'AC Escritório'],\n    ['switch.suite_ac', 'AC Suíte'],\n    ['switch.sala_ac', 'AC Sala'],\n    ['fan.suite_ventilador_2',\
+      \ 'Ventilador'],\n    ['media_player.tv_sala_androidtv', 'TV Sala'],\n    ['media_player.tv_samsung_suite', 'TV Suíte'],\n\
+      \    ['switch.escritorio_computador', 'PC'],\n    ['switch.escritorio_monitor', 'Monitor']\n  ];\n\n  const lightsOn\
+      \ = lightIds.filter(id => states[id]?.state === 'on');\n  const devsOn = devIds\n    .filter(([id]) => ['on', 'cool',\
+      \ 'heat', 'dry', 'auto', 'fan_only', 'playing'].includes(states[id]?.state))\n    .map(([, label]) => label);\n\n  let\
+      \ activeParts = [];\n  if (lightsOn.length === 1) {\n    activeParts.push(states[lightsOn[0]]?.attributes?.friendly_name\
+      \ || '1 luz');\n  } else if (lightsOn.length > 1) {\n    activeParts.push(`${lightsOn.length} luzes`);\n  }\n  activeParts\
+      \ = activeParts.concat(devsOn);\n  let activeStr = activeParts.length === 0\n    ? `<font color=\"#6a7377\">Tudo desligado</font>`\n\
+      \    : activeParts.length === 1\n      ? `${activeParts[0]} ligado`\n      : `${activeParts.slice(0, -1).join(', ')}\
+      \ e ${activeParts[activeParts.length - 1]} ligados`;\n\n  // Weather\n  const w = states['weather.openweathermap'];\n\
+      \  const condMap = {\n    'sunny': 'Ensolarado', 'clear-night': 'Céu limpo', 'cloudy': 'Nublado',\n    'partlycloudy':\
+      \ 'Parc. nublado', 'rainy': 'Chuva', 'pouring': 'Chuva forte',\n    'lightning-rainy': 'Tempestade', 'fog': 'Neblina',\
+      \ 'windy': 'Ventando'\n  };\n  let weatherStr = '';\n  if (w && w.state !== 'unavailable') {\n    const t = Math.round(w.attributes.temperature);\n\
+      \    const feels = w.attributes.apparent_temperature != null ? Math.round(w.attributes.apparent_temperature) : t;\n\
+      \    const hum = w.attributes.humidity;\n    const cond = condMap[w.state] || w.state;\n    weatherStr = `${cond} ·\
+      \ ${t}°C (sensação ${feels}°C) · ${hum}%`;\n  }\n\n  // Vacuum\n  const vac = states['vacuum.escritorio_eufy_x10_pro'];\n\
+      \  let vacStr = '';\n  if (vac?.state === 'cleaning') vacStr = '<b>\U0001F916 Eufy X10 aspirando</b>';\n  else if (vac?.state\
+      \ === 'returning') vacStr = '<b>\U0001F916 Eufy X10 voltando à base</b>';\n\n  // Modes / Lock\n  let modeParts = [];\n\
+      \  if (states['lock.kuanttum_delta_pro_operate_lock']?.state === 'unlocked') modeParts.push('\U0001F513 Porta destrancada');\n\
+      \  if (states['input_boolean.modo_visitas']?.state === 'on') modeParts.push('\U0001F465 Modo Visitas');\n  if (states['input_boolean.faxina']?.state\
+      \ === 'on') modeParts.push('\U0001F9F9 Modo Faxina');\n  if (states['input_boolean.vacation_mode']?.state === 'on')\
+      \ modeParts.push('✈️ Modo Férias');\n  const modeStr = modeParts.length ? `<b>${modeParts.join(' · ')}</b>` : '';\n\n\
+      \  // Energy\n  const pwr = parseFloat(states['sensor.sala_varanda_escritorio_power']?.state);\n  const cost = parseFloat(states['sensor.monthly_energy_cost']?.state);\n\
+      \  const daily = parseFloat(states['sensor.daily_energy']?.state);\n  let energyStr = '';\n  if (!Number.isNaN(pwr))\
+      \ {\n    energyStr = `⚡ ${Math.round(pwr)} W`;\n    if (!Number.isNaN(daily)) energyStr += ` · ${daily.toFixed(1)} kWh\
+      \ hoje`;\n    if (!Number.isNaN(cost)) energyStr += ` · R$ ${Math.round(cost)}/mês`;\n  }\n\n  // Low battery (<= 15%)\n\
+      \  const lowBat = [];\n  for (const [eid, st] of Object.entries(states)) {\n    if (eid.startsWith('sensor.0x') && eid.endsWith('_battery'))\
+      \ {\n      const v = parseFloat(st.state);\n      if (!Number.isNaN(v) && v <= 15) {\n        const nm = (st.attributes?.friendly_name\
+      \ || eid).replace(/ Battery$/i, '');\n        lowBat.push(`${nm} ${Math.round(v)}%`);\n      }\n    }\n  }\n  const\
+      \ batStr = lowBat.length ? `⚠️ Bateria baixa: ${lowBat.slice(0, 3).join(', ')}` : '';\n\n  const blocks = [\n    `<span\
+      \ class=\"time\">${hh}<span class=\"time-colon\">:</span>${mm}</span>`,\n    `<font color=\"#6a7377\"><b>${dateStr}</b></font>`,\n\
+      \    `<b>${greet}</b>`,\n    `<b>${activeStr}</b>`,\n    weatherStr,\n    vacStr,\n    modeStr,\n    energyStr,\n  \
+      \  batStr\n  ].filter(Boolean);\n\n  return blocks.map(b => `<p>${b}</p>`).join('');\n]]]"
+    extra_styles: "\n              :host {\n                --custom-layout-card-padding: 3.3vw;\n                --sidebar-time-font-size:\
+      \ 5.0vw;\n                --sidebar-time-line-height: 4.3vw;\n                --sidebar-font-size: 1.32vw;\n       \
+      \         --sidebar-line-height: 1.9vw;\n                --ha-card-background: none;\n                --ha-card-box-shadow:\
+      \ none;\n                --ha-card-border-width: 0px;\n              }\n              #card {\n                padding:\
+      \ 0;\n                border-width: 0;\n                background: none !important;\n                box-shadow: none\
+      \ !important;\n                font-family: -apple-system, BlinkMacSystemFont, \"SF Pro Display\", Roboto, system-ui,\
+      \ sans-serif;\n              }\n              #container {\n                display: flex !important;\n            \
+      \  }\n              #name {\n                padding: 1.5vw 2.2vw 0 var(--custom-layout-card-padding);\n           \
+      \     white-space: normal;\n                text-align: left;\n                width: 100%;\n              }\n     \
+      \         .time {\n                font-size: var(--sidebar-time-font-size);\n                font-weight: 300;\n  \
+      \              line-height: var(--sidebar-time-line-height);\n                letter-spacing: 0.08vw;\n            \
+      \    margin-left: -0.25vw;\n                color: rgba(255, 255, 255, 0.85);\n              }\n              .time-colon\
+      \ {\n                position: relative;\n                top: -0.09em;\n              }\n              p {\n      \
+      \          font-size: var(--sidebar-font-size);\n                line-height: var(--sidebar-line-height);\n        \
+      \        font-weight: 300;\n                letter-spacing: 0.04vw;\n                color: #7c868a;\n             \
+      \   margin: 0.85vw 0;\n              }\n              b {\n                font-weight: 600;\n              }\n    \
+      \          p > b {\n                color: rgba(255, 255, 255, 0.82);\n              }\n              @media screen\
+      \ and (max-width: 1200px) {\n                .time {\n                  font-size: calc(var(--sidebar-time-font-size)\
+      \ * 1.35);\n                  line-height: calc(var(--sidebar-time-line-height) * 1.35);\n                }\n      \
+      \          p {\n                  font-size: calc(var(--sidebar-font-size) * 1.35);\n                  line-height:\
+      \ calc(var(--sidebar-line-height) * 1.35);\n                }\n              }\n              @media screen and (max-width:\
+      \ 800px) {\n                .time {\n                  font-size: calc(var(--sidebar-time-font-size) * 2.5);\n     \
+      \             line-height: calc(var(--sidebar-time-line-height) * 2.5);\n                }\n                p {\n  \
+      \                font-size: calc(var(--sidebar-font-size) * 2.4);\n                  line-height: calc(var(--sidebar-line-height)\
+      \ * 2.4);\n                }\n                #name {\n                  padding: 1vw 1vw 0 1vw;\n                }\n\
+      \              }\n            "
+  footer:
+    template:
+    - settings
+    - extra_styles
+    variables:
+      notify: '[[[ return false; ]]]'
+    size: 2vw
+    show_icon: false
+    color: '#9da0a2'
+    custom_fields:
+      notify: "[[[\n  if (Number.isInteger(variables.notify) && variables.notify > 0) {\n      return variables.notify;\n\
+        \  } else if (variables.notify === true) {\n      return '<span style=\"font-weight: 900;\">!</span>';\n  }\n]]]"
+    styles:
+      card:
+      - color: '#b4b7bb'
+      - width: fit-content
+      - transition: background 0.2s ease
+      - overflow: visible
+      - --mdc-ripple-color: rgba(0, 0, 0, 0.8)
+      custom_fields:
+        notify:
+        - display: "[[[\n  if (Number.isInteger(variables.notify)) return variables.notify > 0 ? 'initial' : 'none';\n  return\
+            \ variables.notify ? 'initial' : 'none';\n]]]"
+        - position: absolute
+        - font-weight: 700
+        - color: '#f0f0f0'
+        - background: '#9e3636'
+        - border-radius: 50%
+        - text-align: center
+        - text-overflow: unset
+        - z-index: 2
+    tap_action:
+      haptic: medium
+    hold_action:
+      action: none
+    double_tap_action:
+      action: none
+  icon_plex:
+    custom_fields:
+      icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M7.7.3h34.6c4.1 0 7.4 3.3 7.4 7.4v34.6c0 4.1-3.3 7.4-7.4 7.4H7.7c-4.1\
+        \ 0-7.4-3.3-7.4-7.4V7.7C.3 3.6 3.6.3 7.7.3z\" fill=\"#282a2d\"/>\n  <path d=\"M25,7.1H14.6L25,25L14.6,42.9H25L35.4,25L25,7.1z\"\
+        \ fill=\"#e5a00d\"/>\n</svg>\n"
+  icon_apple_tv:
+    custom_fields:
+      icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M25.2 49.7l-13.7-.1c-2.4 0-4.6-.8-6.5-2.2-2-1.6-3.6-3.6-4.3-6.2-.2-1-.2-1.9-.3-3V11.5C.5\
+        \ 7.9 1.9 5 4.8 2.7 6.2 1.6 7.8.8 9.6.5c.5-.1.9-.1 1.4-.1L27.5.3l10.9.1c2.6 0 4.8.8 6.7 2.4 2.1 1.7 3.7 3.9 4.2 6.6l.2\
+        \ 2.4.1 20.5-.1 6.7c-.1 2.2-.9 4.2-2.2 5.9-1.7 2.2-4 3.8-6.8 4.4-.6.1-1.2.2-1.9.2-.1.1-13.4.2-13.4.2zm-4-27.8c-.9-1.2-2.2-1.6-3.7-1.2-.4.1-.8.2-1.2.4-.3.1-.6.1-.8\
+        \ 0-.4-.1-.8-.3-1.2-.4-.3-.1-.7-.1-1-.1-1.5.2-2.4 1.1-3 2.6-.4 1.1-.3 2.2 0 3.5.4 1.5 1 2.9 2.1 4 .5.6 1.2.9 2 .6\
+        \ 1.1-.5 2.2-.5 3.4 0 .8.3 1.5 0 2.1-.6.7-.8 1.1-1.8 1.6-2.8v-.2c-1-.6-1.7-1.4-1.8-2.7-.2-1.4.5-2.4 1.5-3.1zm9.9-1.4c.1.2.1.3.1.4l3.6\
+        \ 9.5c.1.3.3.4.6.4h.7c.6 0 .6 0 .9-.6l3.7-9.4c.1-.1.1-.3.2-.5H39l-2.9 8.3-3.1-8.3-1.9.2zM27.3 18l-1.3.4c-.5.2-.5.2-.6.7v1.4h-1.6l.1\
+        \ 1.4h1.5v5c0 .7.1 1.4.2 2.1.1.5.3 1 .8 1.4.8.6 2.6.7 3.5.2l-.1-1.2h-1.3c-.5 0-.9-.3-1-.8-.1-.3-.2-.6-.2-1v-5.8H30c0-.5.1-1\
+        \ 0-1.4h-2.7V18zm-8.8-.9c-1.9.3-3 2-2.7 3.2 1.4.2 2.9-1.7 2.7-3.2z\"/>\n</svg>\n"
+  icon_spotify:
+    custom_fields:
+      icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M25 .3C11.4.3.3 11.4.3 25S11.4 49.7 25 49.7 49.7 38.6 49.7 25 38.6.3\
+        \ 25 .3zm11.3 35.6c-.4.7-1.4 1-2.1.5-5.8-3.5-13.1-4.3-21.7-2.4-.8.2-1.7-.3-1.8-1.2-.2-.8.3-1.7 1.2-1.8 9.4-2.2 17.5-1.2\
+        \ 24 2.8.6.5.9 1.4.4 2.1zm3.1-6.7c-.6.9-1.7 1.2-2.6.6-6.6-4.1-16.8-5.3-24.6-2.9a1.96 1.96 0 0 1-2.4-1.3 1.96 1.96\
+        \ 0 0 1 1.3-2.4c9-2.7 20.1-1.4 27.7 3.3.8.6 1.1 1.8.6 2.7h0zm.2-7c-8-4.7-21.1-5.2-28.7-2.9-1.2.4-2.5-.3-2.9-1.5s.3-2.5\
+        \ 1.5-2.9c8.7-2.6 23.2-2.1 32.4 3.3 1.1.7 1.5 2.1.8 3.2-.6 1.1-2 1.4-3.1.8h0z\"/>\n</svg>\n"
+  icon_nest_mini:
+    custom_fields:
+      icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M49.7 25c0 13.6-11.1 24.7-24.8 24.7C11.3 49.7.3 38.6.3 25S11.4.3 25\
+        \ .3 49.7 11.4 49.7 25zm-33.9 0a2.22 2.22 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3.1 2.3-.9\
+        \ 2.3-2.2h0zm10.8 0c0 1.2.9 2.2 2.2 2.3 1.3 0 2.3-1 2.3-2.2 0-1.3-1-2.3-2.2-2.3-1.3 0-2.3.9-2.3 2.2zm-3.2 0a2.22 2.22\
+        \ 0 0 0-2.2-2.2c-1.2 0-2.3 1-2.3 2.2a2.22 2.22 0 0 0 2.2 2.2c1.3 0 2.3-.9 2.3-2.2h0zm13 2.2a2.22 2.22 0 0 0 2.2-2.2c0-1.2-1-2.3-2.2-2.3a2.22\
+        \ 2.22 0 0 0-2.2 2.2c0 1.3 1 2.3 2.2 2.3z\" />\n</svg>\n"
+  icon_play_pause:
+    styles:
+      custom_fields:
+        play_pause:
+        - top: -10%
+        - right: 0
+        - bottom: 0
+        - left: 0
+        - margin: auto
+        - width: 25%
+        - height: 25%
+        - position: absolute
+        - fill: '#dedede'
+    custom_fields:
+      play_pause: "[[[\n  let style = `\n    <style>\n      .scale-up {\n        animation: scale-up 1s forwards;\n      \
+        \  cubic-bezier(.05, .5, .3, 1);\n        transform-origin: center center;\n      }\n      @keyframes scale-up {\n\
+        \        0% {\n          opacity: 0;\n          transform: scale(0);\n        }\n        20% {\n          transform:\
+        \ scale(1);\n        }\n        30% {\n          opacity: 1;\n        }\n        80% {\n          opacity: 1;\n  \
+        \      }\n        100% {\n          opacity: 0;\n        }\n      }\n    </style>\n  `;\n  if (variables.state ===\
+        \ 'paused' && variables.timeout < 2000) {\n      return `\n        <svg viewBox=\"0 0 166 166\">${style}\n       \
+        \   <path class=\"scale-up\" d=\"M0 0h59.9v166H0zm106.1 0H166v166h-59.9z\"/>\n        </svg>\n      `;\n  }\n  if\
+        \ (variables.state === 'playing' && variables.timeout < 2000) {\n      return `\n        <svg viewBox=\"0 0 166 166\"\
+        >${style}\n          <path class=\"scale-up\" d=\"M0 0l166 83L0 166z\"/>\n        </svg>\n      `;\n  }\n]]]\n"
+  icon_hue:
+    styles:
+      custom_fields:
+        icon:
+        - width: 77%
+        - margin-left: -14%
+        - margin-top: 1%
+    custom_fields:
+      icon: "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on' : null;\n  return `\n    <svg viewBox=\"\
+        0 0 50 50\">\n      <style>\n        @keyframes on {\n          0% {\n            transform: scale(0.85);\n      \
+        \    }\n          20% {\n            transform: scale(1.1);\n          }\n          40% {\n            transform:\
+        \ scale(0.95);\n          }\n          60% {\n            transform: scale(1.03);\n          }\n          80% {\n\
+        \            transform: scale(0.97);\n          }\n          100% {\n            transform: scale(1);\n          }\n\
+        \        }\n        .on {\n          animation: on 0.8s;\n          transform-origin: center;\n        }\n      </style>\n\
+        \      <path fill=\"#9da0a2\" d=\"M27.4 47.3h-4.9s-.7.1-.7.8.4.9.7.9h4.9c.3 0 .7-.1.7-.9s-.7-.8-.7-.8zm3.3-2.9H19.3s-.8\
+        \ 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-3H19.3s-.8 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9-.1-.8-.9-.8-.9-.8zm0-2.9H19.3s-.8\
+        \ 0-.8.8.6.9.8.9h11.5c.2 0 .8-.1.8-.9s-.9-.8-.9-.8zm5.2-23.2c-3.3-5.3-7-5.6-10.9-5.6-3.8 0-8.4.4-10.9 5.6-.1.1-.1.3.1.7.4.8\
+        \ 3.3 7.2 3.2 18.8 0 1.1-.1 1.6 0 1.7 0 .1 0 .7 1.1.7h13c1 0 1-.5 1.1-.7v-1.7c-.1-11.6 2.8-18 3.2-18.8.1-.4.1-.5.1-.7\"\
+        />\n      <path class=\"${state} light-color\" d=\"M14.1 15.3c3.4-.3 7-.4 10.9-.4 3.8 0 7.5.2 10.9.4.4-.4.7-.8.9-1.1C39\
+        \ 8.5 38.9 6.5 38.9 6c-.2-4.4-8.4-5-12.1-5h0-3.4c-3.7 0-12 .5-12.1 5 0 .5-.1 2.5 2.1 8.2 0 .3.3.8.7 1.1z\"/>\n   \
+        \ </svg>\n  `;\n]]]\n"
+  icon_shade:
+    styles:
+      custom_fields:
+        icon:
+        - width: 77%
+        - margin-left: -15%
+        - margin-top: 1%
+    custom_fields:
+      icon: "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on' : null;\n  return `\n    <svg viewBox=\"\
+        0 0 50 50\">\n      <style>\n        @keyframes on {\n          0% {\n            transform: scale(0.85);\n      \
+        \    }\n          20% {\n            transform: scale(1.1);\n          }\n          40% {\n            transform:\
+        \ scale(0.95);\n          }\n          60% {\n            transform: scale(1.03);\n          }\n          80% {\n\
+        \            transform: scale(0.97);\n          }\n          100% {\n            transform: scale(1);\n          }\n\
+        \        }\n        .on {\n          animation: on 0.8s;\n          transform-origin: center;\n        }\n      </style>\n\
+        \      <path fill=\"#9da0a2\" d=\"M26.4 25.6c.6-.3 1.1-.7 1.1-1.3L25 17.9l-2.5 6.4c0 .7.6 1.1 1.1 1.3v20.8h-5.5v2.7h13.7v-2.7h-5.5V25.6z\"\
+        />\n      <path class=\"${state} light-color\" d=\"M24.6.9l-9.4.5c-.6.1-1.9 0-2.5 2.1s-2.4 9.1-4 16.9c-.2.7-.5 2-.5\
+        \ 2.3s-.4 1.6.9 1.6c.8.1 7.4.3 15.9.3 8.6 0 15.1-.3 15.9-.3 1.3-.1.9-1.3.9-1.6s-.3-1.6-.5-2.3c-1.6-7.8-3.4-14.8-4-16.9s-1.9-2-2.5-2.1c-1.6-.2-6.9-.4-9.4-.5\"\
+        />\n    </svg>\n  `;\n]]]\n"
+  icon_tv:
+    styles:
+      custom_fields:
+        icon:
+        - width: 87%
+        - margin-top: -8%
+        - fill: "[[[\n  return variables.state_on\n      ? '#616161'\n      : '#9da0a2';\n]]]\n"
+    custom_fields:
+      icon: "[[[\n  let style = `\n    <style>\n      @keyframes on {\n        from {\n          transform: scaleY(0);\n \
+        \       }\n        to {\n          transform: scaleY(1);\n        }\n      }\n      .on {\n        animation: on 1s;\n\
+        \        transform-origin: -100% 46%;\n        animation-fill-mode: forwards;\n      }\n      @keyframes off {\n \
+        \       from {\n          transform: scaleY(1);\n        }\n        to {\n          transform: scaleY(0);\n      \
+        \  }\n      }\n      .off {\n        animation: off 1s;\n        transform-origin: -100% 46%;\n        animation-fill-mode:\
+        \ forwards;\n      }\n    </style>\n  `,\n    path = `\n      <path d=\"M46 9.2v27.5H4.1V9.2H46m2.4-2.4H1.6v32.3h46.7c.1\
+        \ 0 .1-32.3.1-32.3zM11.9 43.2h26.3c.6 0 1.1-.4 1.1-1v-.3c0-.6-.4-1.1-1-1.1H11.9c-.6 0-1.1.4-1.1 1v.3a1.11 1.11 0 0\
+        \ 0 1.1 1.1z\"/>\n    `,\n    gradient = `\n      <linearGradient id=\"A\" gradientUnits=\"userSpaceOnUse\" x1=\"\
+        5.401\" y1=\"34.714\" x2=\"43.817\" y2=\"11.74\">\n        <stop offset=\"0\" stop-color=\"#64acb7\"/>\n        <stop\
+        \ offset=\"1\" stop-color=\"#7fdbe9\"/>\n      </linearGradient>\n    `;\n  if (variables.state_on && variables.timeout\
+        \ < 2000) {\n      return `\n        <svg viewBox=\"0 0 50 50\"> ${style} ${gradient} \n          <path d=\"M2.9,8h44.3v29.9H2.9V8z\"\
+        \ fill=\"#20262890\"/>\n          <path class=\"on\" d=\"M2.9,8h44.3v29.9H2.9V8z\" fill=\"url(#A)\"/> ${path} \n \
+        \       </svg>\n      `;\n  }\n  if (variables.state_on && variables.timeout > 2000) {\n      return `\n        <svg\
+        \ viewBox=\"0 0 50 50\"> ${gradient} \n          <path d=\"M2.9,8h44.3v29.9H2.9V8z\" fill=\"#20262890\"/>\n      \
+        \    <path class=\"on\" d=\"M2.9,8h44.3v29.9H2.9V8z\" fill=\"url(#A)\"/> ${path} \n        </svg>\n      `;\n  }\n\
+        \  if (variables.state === 'off' && variables.timeout < 2000) {\n      return `\n        <svg viewBox=\"0 0 50 50\"\
+        > ${style} ${gradient} \n          <path class=\"off\" d=\"M2.9,8h44.3v29.9H2.9V8z\" fill=\"url(#A)\"/> ${path} \n\
+        \        </svg>\n      `;\n  } else {\n      return `\n        <svg viewBox=\"0 0 50 50\"> ${style} \n          ${path}\n\
+        \        </svg>\n      `;\n  }\n]]]\n"
+  icon_ps5:
+    styles:
+      custom_fields:
+        icon:
+        - width: 89%
+        - margin-left: -2%
+        - margin-top: -9%
+    custom_fields:
+      icon: "[[[\n  if (variables.state_on && variables.timeout < 2000) {\n      return `\n        <svg viewBox=\"0 0 50 50\"\
+        >\n          <style>\n          @keyframes on {\n            50% {\n              transform: translateY(-45%);\n \
+        \           }\n            100% {\n              transform: translateY(0);\n            }\n          }\n         \
+        \ .on {\n            animation: on 2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;\n          }\n        </style>\n\
+        \        <g style=\"clip-path: url(#mask);\">\n          <g class=\"on\">\n            <path fill=\"#00aa9e\" d=\"\
+        M49.2 38.9l-75.6-25.1v7.4l75.6 25.2z\"/>\n            <path fill=\"#f3c202\" d=\"M49.2 46.4l-75.6-25.2v7.5l75.6 25.1z\"\
+        />\n            <path fill=\"#326db3\" d=\"M49.2 53.8l-75.6-25.1V51l75.6 25.1zm0-22.3L-26.4 6.4v7.4l75.6 25.1z\"/>\n\
+        \          </g>\n        </g>\n        <defs>\n          <clipPath id=\"mask\">\n            <path d=\"M47.5 33.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1\
+        \ 1.9l-.6.2v-5.7l-5.7.8-4.6 1.6L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1 2.1 4.7 2.6 8.2 3.2 3.3.6 6.2.2 8.9-.7l7.3 4.8L33\
+        \ 41l10.7-4h.1c2.8-1 4-2.5 3.7-3.8zm-31.3 2l-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 7.2-2.7v2.8l-3.2 1.1zm22.5-1.1l-1.9.7-10.2\
+        \ 3.7V36l6.5-2.4 3.8-1.3c4-.9 5.6.5 1.8 1.8z\"/>\n          </clipPath>\n        </defs>\n        <path fill=\"#de0029\"\
+        \ d=\"M26.7 14.6v28.7l-7.3-2.5V7.1l9.3 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3h0z\"\
+        />\n      </svg>\n    `;\n  }\n\n  return variables.state_on && variables.timeout > 2000\n      ? `\n        <svg\
+        \ viewBox=\"0 0 50 50\">\n          <path d=\"M33.1 33.6L26.7 36v-4.5l6.4 2.1h0zM19.4 29l-2.9-1h-.1L6 31.9h-.1-.1l6.3\
+        \ 2.1h.1l7.2-2.7V29zm0 5.1l-3.2 1.1-.3.1 3.5 1.2v-2.4zm17.4.7h0l-10.1 3.7v.4L33 41l10.6-4-6.8-2.2z\" fill=\"#00aa9e\"\
+        \ />\n          <path d=\"M19.4 38.5l-.1.1c-2.7.9-5.6 1.3-8.9.7-3.5-.6-8.1-1.1-8.2-3.2-.1-2 1.7-3.4 3.6-4.2l6.3 2.1-1.6.6c-2\
+        \ .8-.1 2.7 2.1 1.9l3.3-1.2 3.5 1.2v2zm7.3 4.8L33 41l-6.3-2.1v4.4\" fill=\"#f3c202\" />\n          <path d=\"M19.4\
+        \ 29l-2.9-1 2.9-1v2zm28.1 4.2c-.5-2.2-3.9-3.5-9.1-3.9-3.8-.3-7.5.6-11.1 1.9l-.6.2h0l6.5 2.1 3.7-1.3c4-.9 5.6.5 1.8\
+        \ 1.8l-1.9.7 6.8 2.2h.1.1c2.8-.9 4-2.4 3.7-3.7z\" fill=\"#326db3\" />\n          <path d=\"M26.7 14.6v28.7l-7.3-2.5V7.1l9.3\
+        \ 2.6c6 1.7 9.6 5 9.6 10.7-.1 6.7-3 9.4-8.7 7.6V14.9c-.1-1.6-2.9-1.7-2.9-.3z\" fill=\"#de0029\" />\n        </svg>`\n\
+        \      : `\n        <svg viewBox=\"0 0 50 50\">\n          <path fill=\"#9da0a2\" d=\"M43.8 37h-.1l-10.6 4-4.2 1.6v-4.9l8-2.9\
+        \ 1.9-.7c3.8-1.3 2.2-2.7-1.8-1.9l-3.8 1.3-4.3 1.6v-4.5c3.1-1 6.3-1.6 9.5-1.4 5.3.4 8.7 1.6 9.1 3.9.3 1.4-.9 2.9-3.7\
+        \ 3.9zm-26.7-2.1l-.9.3-3.6 1.3c-2.2.8-4.1-1.1-2.1-1.9l1.7-.6 5-1.9v-4.2l-.6.2L6 31.9h-.1c-1.9.7-3.8 2.2-3.7 4.2.1\
+        \ 2.1 4.7 2.6 8.2 3.2 2.4.4 4.6.3 6.7-.1v-4.3zm12.4-20V28c5.7 1.7 8.7-.9 8.7-7.6.1-5.7-3.6-9-9.6-10.7l-9.3-2.6v33.8l7.2\
+        \ 2.5.1.1V14.6c.1-1.4 2.9-1.3 2.9.3z\"/>\n        </svg>`;\n]]]\n"
+  icon_spot:
+    styles:
+      custom_fields:
+        icon:
+        - width: 74%
+        - margin-left: -8%
+        - margin-top: 3%
+    custom_fields:
+      icon: "[[[\n  let state;\n  if (variables.state_on && variables.timeout < 2000) {\n      state = 'on';\n  } \n  if (variables.state\
+        \ === 'off' && variables.timeout < 2000) {\n      state = 'off';\n  }\n  if (variables.state_on && variables.timeout\
+        \ > 2000) {\n      state = 'on_timeout';\n  }\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n      \
+        \  @keyframes on {\n          0% {\n            transform: rotateZ(0deg);\n            animation-timing-function:\
+        \ cubic-bezier(0.7, 0, 0.84, 0);\n          }\n          70% {\n            transform: rotateZ(-15deg);\n        \
+        \    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);\n          }\n          75% {\n            transform:\
+        \ rotateZ(-15deg);\n            animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);\n          }\n         \
+        \ 88% {\n            transform: rotateZ(-11deg);\n          }\n          100% {\n            transform: rotateZ(-15deg);\n\
+        \          }\n        }\n        @keyframes off {\n          0% {\n            transform: rotateZ(-15deg);\n     \
+        \       animation-timing-function: cubic-bezier(0.7, 0, 0.84, 0);\n          }\n          70% {\n            transform:\
+        \ rotateZ(0deg);\n            animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);\n          }\n          75%\
+        \ {\n            transform: rotateZ(0deg);\n            animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);\n\
+        \          }\n          88% {\n            transform: rotateZ(-4deg);\n          }\n          100% {\n           \
+        \ transform: rotateZ(0deg);\n          }\n        }\n        .on {\n          animation: on 0.7s;\n          transform-origin:\
+        \ 40% 20%;\n          animation-fill-mode: forwards;\n          animation-delay: -0.1s;\n        }\n        .off {\n\
+        \          animation: off 0.7s;\n          transform-origin: 40% 20%;\n          animation-fill-mode: forwards;\n\
+        \        }\n        .on_timeout {\n          transform: rotateZ(-15deg);\n          transform-origin: 40% 20%;\n \
+        \       }\n      </style>\n      <path style=\"clip-path: url(#mask);\" fill=\"#9da0a2\" d=\"M40.5.8H17.1c-.1 0-.1\
+        \ 0-.1.1A3.12 3.12 0 0 0 20.1 4h6.1c.1 0 .1 0 .1.1v7.4L18 19.1l3.6 3.5 9.1-8.6c.4-.4.6-1 .7-1.6V4c0-.1 0-.1.1-.1h6c1.7.1\
+        \ 3.1-1.3 3-3.1z\"/>\n      <defs>\n        <clipPath id=\"mask\">\n          <path class=\"${state}\" d=\"M0 9.1h24l8.3\
+        \ 8.8H50V-9H0z\"/>\n        </clipPath>\n      </defs>\n      <path class=\"${state} light-color\" d=\"M25.5 46.4s1.4.5\
+        \ 10.4-8.2c.5-.4 6.3-6.3 5.8-7.1-.7-.8-18.6-19.5-18.6-19.5s-.6-.9-8.6 6.4c-.6.5-8.7 8-7.7 9.1l18.7 19.3z\"/>\n   \
+        \ </svg>\n  `;\n]]]\n"
+  icon_imac:
+    styles:
+      custom_fields:
+        icon:
+        - width: 80%
+        - margin-left: 1%
+        - margin-top: -5%
+        - fill: '[[[ return variables.state_on ? ''#72757c'' : ''#9da0a2''; ]]]
+
+            '
+    custom_fields:
+      icon: "[[[\n  let state = variables.state_on && variables.timeout < 2000\n      ? 'on'\n      : null;\n  return `\n\
+        \    <svg viewBox=\"0 0 50 50\">\n      <style>\n        @keyframes on {\n          from {\n            opacity: 0.5;\n\
+        \            transform: scale(0.6);\n          }\n          100% {\n            opacity: 1;\n          }\n       \
+        \ }\n        .on {\n          animation: on 0.8s cubic-bezier(0.25, 1, 0.5, 1);\n          transform-origin: center;\n\
+        \        }\n      </style>\n      <path class=\"${state}\" d=\"M31.9 44.5c-1-.3-1.9.4-1.9-3.7h-9.9c0 4.2-.9 3.4-1.9\
+        \ 3.7s-.2.7-.2.7h14.1s.8-.3-.2-.7zM47.6 4.8H2.5c-1.1 0-2 .9-2 2v30.1c0 1.1.9 2 2 2h45c1.1 0 2-.9 2-2v-30a1.95 1.95\
+        \ 0 0 0-1.9-2.1zm-.7 26.4H3.2V7.6H47v23.6z\"/>\n    </svg>\n  `;\n]]]\n"
+  icon_monitors:
+    styles:
+      custom_fields:
+        icon:
+        - width: 73%
+        - margin-left: -9%
+    custom_fields:
+      icon: "[[[\n  let style = `\n    <style>\n      @keyframes cone {\n        35% {\n          transform: scale(0.8);\n\
+        \          animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);\n        }\n        36% {\n          transform:\
+        \ translateY(0%);\n        }\n        49% {\n          transform: scale(1.25);\n        }\n        63% {\n       \
+        \   transform: scale(0.85);\n          animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);\n        }\n   \
+        \     77% {\n          transform: scale(1.15);\n          animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);\n\
+        \        }\n        95% {\n          transform: scale(1);\n        }\n      }\n      .cone {\n        animation: cone\
+        \ 1.2s;\n        transform-origin: center;\n      }\n      @keyframes speaker {\n        0% {\n          transform:\
+        \ scale(1);\n        }\n        40% {\n          transform: scale(1);\n        }\n        49% {\n          transform:\
+        \ scale(0.95);\n        }\n        63% {\n          transform: scale(1);\n        }\n        77% {\n          transform:\
+        \ scale(0.95);\n        }\n        100% {\n          transform: scale(1);\n        }\n      }\n      .speaker {\n\
+        \        animation: speaker 1.3s;\n        transform-origin: center;\n      }\n    </style>\n  `,\n    paths = `\n\
+        \      <g class=\"speaker\">\n        <path fill=\"#686868\" d=\"M35.8 46.9H14.2c-1.1 0-2-1-2-2.3V6.7c0-1.3.9-2.3\
+        \ 2-2.3h21.5c1.1 0 2 1 2 2.3v37.9c0 1.2-.9 2.3-1.9 2.3z\"/>\n        <path fill=\"#2a2a2a\" d=\"M39.2 1H10.8C9.4 1\
+        \ 8.3 2.1 8.2 3.5v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3c1.4 0 2.5-1.2 2.6-2.6V3.5c0-1.4-1.1-2.5-2.5-2.5zM25 7c1.3 0 2.4\
+        \ 1.1 2.4 2.4s-1.1 2.4-2.4 2.4-2.4-1.1-2.4-2.4C22.5 8 23.6 7 25 7zm10.2 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6s-.1-1.1-.4-1.9.6-.9.6-.9h19.3c0-.1.8-.1.5.9z\"\
+        />\n      </g>\n      <path class=\"cone\" fill=\"#e5dd00\" d=\"M25 15.7c-6.2 0-11.3 5.1-11.3 11.3S18.8 38.3 25 38.3\
+        \ 36.3 33.2 36.3 27c-.1-6.3-5.1-11.3-11.3-11.3zm0 14.5a3.33 3.33 0 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0\
+        \ 0 1 3.3 3.3c-.1 1.9-1.5 3.3-3.3 3.3z\"/>\n    `;\n  if (variables.state_on && variables.timeout < 2000) {\n    \
+        \  return `\n        <svg viewBox=\"0 0 50 50\">\n          ${style}\n          ${paths}\n        </svg>\n      `;\n\
+        \  }\n\n  return variables.state_on && variables.timeout > 2000\n      ? `\n        <svg viewBox=\"0 0 50 50\">\n\
+        \          ${paths}\n        </svg>\n      `\n      : `\n        <svg viewBox=\"0 0 50 50\">\n          <path fill=\"\
+        #9da0a2\" d=\"M25 18.6c-4.6 0-8.4 3.8-8.4 8.4s3.8 8.4 8.4 8.4 8.4-3.8 8.4-8.4-3.7-8.4-8.4-8.4zm0 11.7a3.33 3.33 0\
+        \ 0 1-3.3-3.3 3.33 3.33 0 0 1 3.3-3.3 3.33 3.33 0 0 1 3.3 3.3c0 1.8-1.4 3.3-3.3 3.3zM39.2 1H10.9C9.4 1 8.3 2.1 8.3\
+        \ 3.6v42.9a2.65 2.65 0 0 0 2.6 2.6h28.3a2.65 2.65 0 0 0 2.6-2.6v-43C41.7 2 40.5.9 39.2 1zM25 7c1.3 0 2.4 1.1 2.4 2.4s-1.1\
+        \ 2.4-2.4 2.4-2.4-1.1-2.4-2.4S23.7 7 25 7zm10.3 35.5l-.4 1.9s-.2.6-.6.6H15.8c-.4 0-.6-.6-.6-.6l-.4-1.9c-.2-.9.6-.9.6-.9h19.3s.9.1.6.9zM25\
+        \ 38.2c-6.2 0-11.3-5.1-11.3-11.3a11.29 11.29 0 1 1 22.6 0c.1 6.3-5 11.3-11.3 11.3z\"/>\n        </svg>\n      `;\n\
+        ]]]\n"
+  icon_lamp:
+    styles:
+      custom_fields:
+        icon:
+        - width: 79%
+        - margin-left: -16%
+    custom_fields:
+      icon: "[[[\n  let state = variables.state_on && variables.timeout < 2000 ? 'on' : null;\n  return `\n    <svg viewBox=\"\
+        0 0 50 50\">\n      <style>\n        @keyframes on {\n          0% {\n            transform: scale(0.85);\n      \
+        \    }\n          20% {\n            transform: scale(1.1);\n          }\n          40% {\n            transform:\
+        \ scale(0.95);\n          }\n          60% {\n            transform: scale(1.03);\n          }\n          80% {\n\
+        \            transform: scale(0.97);\n          }\n        }\n        .on {\n          animation: on 0.8s;\n     \
+        \     transform-origin: center;\n        }\n      </style>\n      <path fill=\"#9da0a2\" d=\"M26.5 21.8l3.8-6.1H19.7l3.8\
+        \ 6.1c-5 .7-6.3 5.8-5.7 10.2.7 5.1 3.2 10.1 5.7 14.4H19v2.5h11.8v-2.5h-4.5C29 42 31.4 37 32.1 32c.6-4.4-.6-9.4-5.6-10.2zm3.1\
+        \ 9.1c-.3 4.3-2.3 8.7-4.4 12.4l-.2.1v.1-.1c-1.8-3-3.3-6.4-4.1-9.7-.7-3.1-1-7.2 2.7-8.4 1.4-.5 3.1-.1 4.2.8 1.6 1 1.8\
+        \ 3 1.8 4.8z\"/>\n      <path class=\"${state} light-color\" d=\"M38.1 20L35.7 3.8c-.3-1.9-.4-1.7-.6-2-.9-.6-2.3-.7-2.3-.7H17.4s-1.4\
+        \ 0-2.3.7c-.2.3-.3.1-.6 2C14 5.7 11.9 20 11.9 20s5.8.3 13.4.3h0c7.3 0 12.8-.3 12.8-.3z\"/>\n    </svg>\n  `;\n]]]\n"
+  icon_climate:
+    styles:
+      custom_fields:
+        icon:
+        - width: 78%
+        - margin-left: -10%
+        - fill: '[[[ return variables.state === ''cool'' || variables.state === ''fan_only'' ? ''#5daeea'' : ''#9da0a2'';
+            ]]]
+
+            '
+    custom_fields:
+      icon: "<svg viewBox=\"0 0 50 50\">\n  <path d=\"M36.8 1.2v1.7a5.34 5.34 0 0 1-5.3 5.3H18.4a5.34 5.34 0 0 1-5.3-5.3V1.2c-2.6.4-4.7\
+        \ 2.8-4.7 5.6v36.5c0 3.1 2.6 5.7 5.7 5.7h21.8c3.1 0 5.7-2.6 5.7-5.7V6.8c0-2.8-2.1-5.2-4.8-5.6zm-1.7 35.6c-.2 0-.4\
+        \ 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1\
+        \ .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1\
+        \ 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1\
+        \ 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1\
+        \ .3-1.8.7-2.1.9l-.6.3a9.75 9.75 0 0 1-1.4.6c-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1\
+        \ 1.3.2 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1\
+        \ 1.2.3 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zm0-6c-.2 0-.4 0-.5-.1-.4-.1-1.2-.2-2.4-.6-.5-.2-.8-.3-1.2-.4-.3-.1-.7-.3-1.4-.5-1-.4-1.5-.5-1.9-.6-.5-.1-1.1-.2-1.9-.2s-1.4.2-1.9.4c-1\
+        \ .3-1.8.7-2.1.9l-.6.3c-.4.2-.8.4-1.4.6-.3.1-.9.3-1.6.3h-.3c-.4 0-1 0-2-.2-.3-.1-.6-.1-.8-.2v-2.7l1.3.3c.5.1 1.3.2\
+        \ 1.7.2.5 0 .9-.2 1.1-.2.4-.1.6-.2 1-.4.2-.1.4-.2.7-.4.4-.2 1.3-.7 2.5-1 .6-.2 1.4-.4 2.5-.5s2 .1 2.5.2c.6.1 1.2.3\
+        \ 2.2.7l1.5.5c.3.1.6.2 1 .4 1 .3 1.8.5 2.1.5h.1v2.7zM15.7 1.9v-.8h18.6V3c0 1.5-1.2 2.8-2.8 2.8H18.4c-1.5 0-2.8-1.2-2.8-2.8V1.9z\"\
+        />\n</svg>\n"
+  icon_bathroom:
+    styles:
+      custom_fields:
+        icon:
+        - width: 78%
+        - margin-left: -10%
+    custom_fields:
+      icon: "[[[\n  let state;\n  if (variables.state_on && variables.timeout < 2000) {\n    state = 'on';\n  } \n  if (variables.state\
+        \ === 'off' && variables.timeout < 2000) {\n    state = 'off';\n  }\n  if (variables.state_on && variables.timeout\
+        \ > 2000) {\n    state = 'on_timeout';\n  }\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n        @keyframes\
+        \ on {\n          0% {\n            transform: rotateZ(0deg) translate(0%, 0%);\n          }\n          100% {\n \
+        \           transform: rotateZ(-90deg) translate(-1.5%, 0%);\n          }\n        }\n        @keyframes off {\n \
+        \         0% {\n            transform: rotateZ(-90deg) translate(-1.5%, 0%);\n          }\n          45% {\n     \
+        \       transform: rotateZ(-40deg);\n          }\n          55% {\n            transform: rotateZ(0deg);\n       \
+        \   }\n          65% {\n            transform: rotateZ(-15deg);\n          }\n          75% {\n            transform:\
+        \ rotateZ(0deg);\n          }\n          85% {\n            transform: rotateZ(-5deg);\n          }\n          95%\
+        \ {\n            transform: rotateZ(0deg);\n          }\n        }\n        .on {\n          animation: on 0.45s;\n\
+        \          animation-fill-mode: forwards;\n          transform-origin: 45% 41%;\n          transition-timing-function:\
+        \ cubic-bezier(0.85, 0, 0.15, 1);\n        }\n        .on_timeout {\n          transform: rotateZ(-90deg) translate(-1.5%,\
+        \ 0%);\n          transform-origin: 45% 41%;\n        }\n        .off {\n          animation: off 1.1s linear;\n \
+        \         animation-delay: 0.05s;\n          animation-fill-mode: both;\n          transform-origin: 45% 41%;\n  \
+        \      }\n      </style>\n      <g class=\"light-color\">\n        <path d=\"M12.9 1.2h2.5c1.6 0 2.9 1.3 2.9 2.9v18.6c0\
+        \ 1.4 1.1 2.5 2.4 2.5h20.5c.5 0 1 .4.9 1-.1 2.6-1.2 9.6-10.2 11v7.6c0 .2.2.4.4.4h1.5a1.58 1.58 0 0 1 1.6 1.6v.3a1.58\
+        \ 1.58 0 0 1-1.6 1.6H11a1.58 1.58 0 0 1-1.6-1.6v-.3a1.58 1.58 0 0 1 1.6-1.6h1.6c.2 0 .4-.2.4-.4v-7.6s-5.2-.3-5.2-5.9V4.2c0-1.6\
+        \ 1.3-2.9 2.9-2.9l2.2-.1c0 .1 0 0 0 0z\"/>\n        <path class=\"${state}\" d=\"M22.3 18.8h18.3a1.58 1.58 0 0 1 1.6\
+        \ 1.6v.6a1.58 1.58 0 0 1-1.6 1.6h-19c-.4 0-.7-.3-.8-.7v-2.3c0-.4.3-.7.7-.8h.8z\"/>\n      </g>\n    </svg>\n  `;\n\
+        ]]]\n"
+  icon_fan2:
+    styles:
+      custom_fields:
+        icon:
+        - width: 75%
+        - margin-left: -3%
+    custom_fields:
+      icon: "[[[\n  let path = `\n    <circle cx=\"25\" cy=\"25\" r=\"6.6\"/>\n    <path d=\"M31.9 30.4c-.5.6-1.1 1.1-1.7\
+        \ 1.5-1.4 1.1-3.2 1.7-5.2 1.7-2.3 0-4.5-.9-6-2.4-.9 1.1-1.6 2.3-2.3 3.2l-4.9 5.4c-1.8 2.7.3 5.6 2.5 7 3.9 2.4 9.8\
+        \ 3.1 14.1 1.9 4.6-1.3 7.9-4.7 7.4-9.7-.2-3.4-1.9-6-3.9-8.6zM17 28.3c-.4-1-.6-2.1-.6-3.3a8.7 8.7 0 0 1 6.4-8.4l-1.6-3.5L19\
+        \ 6.2c-1.5-2.8-5-2.5-7.3-1.2-4 2.2-7.5 6.9-8.7 11.3-1.2 4.6.2 9.2 4.7 11.3 3.1 1.3 6.1 1.2 9.3.7zm26.9-17.6c-3.3-3.4-8-4.6-12.1-1.8-2.8\
+        \ 1.8-4.2 4.6-5.5 7.5 4.2.6 7.4 4.2 7.4 8.6 0 .9-.1 1.7-.4 2.5 1.3.2 2.8.3 3.8.4 2.3.4 4.7 1.3 7.1 1.7 3.2.3 4.7-3\
+        \ 4.8-5.6.3-4.6-1.9-10.1-5.1-13.3z\"/>\n  `,\n  style = `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n      \
+        \  @keyframes rotate {\n          0% {\n            visibility: visible;\n            transform: rotate(0deg) translateZ(0);\n\
+        \          }\n          100% {\n            transform: rotate(1080deg) translateZ(0);\n          }\n        }\n  \
+        \      .start {\n          animation: rotate 2.8s ease-in;\n          transform-origin: center;\n          fill: #5daeea;\n\
+        \          visibility: hidden;\n          will-change: transform;\n        }\n        .on {\n          animation:\
+        \ rotate 1.8s linear infinite;\n          transform-origin: center;\n          fill: #5daeea;\n          animation-delay:\
+        \ 2.8s;\n          visibility: hidden;\n          will-change: transform;\n        }\n        .end {\n          animation:\
+        \ rotate 2.8s;\n          transform-origin: center;\n          fill: #9ca2a5;\n          animation-timing-function:\
+        \ cubic-bezier(0.61, 1, 0.88, 1);\n          will-change: transform;\n        }\n        .start_timeout {\n      \
+        \    animation: rotate 1.8s linear infinite;\n          transform-origin: center;\n          fill: #5daeea;\n    \
+        \      visibility: hidden;\n          will-change: transform;\n        }\n        .end_timeout {\n          fill:\
+        \ #9ca2a5;\n        }\n      </style>\n  `;\n  if (variables.state_on && variables.timeout < 2000) {\n    return `${style}<g\
+        \ class=\"start\">${path}</g><g class=\"on\">${path}</g></svg>`;\n  }\n  if (variables.state === 'off' && variables.timeout\
+        \ < 2000) {\n    return `${style}<g class=\"end\">${path}</g></svg>`;\n  }\n  if (variables.state_on && variables.timeout\
+        \ > 2000) {\n    return `${style}<g class=\"start_timeout\">${path}</g></svg>`;\n  } else {\n    return `${style}<g\
+        \ class=\"end_timeout\">${path}</g></svg>`;\n  }\n]]]\n"
+  icon_closet:
+    styles:
+      custom_fields:
+        icon:
+        - width: 80%
+        - margin-left: -16%
+    custom_fields:
+      icon: "[[[\n  let room = `d=\"M11.4,1.4h27.2v43.1H11.4V1.4z\" fill=\"#bcbcbc\"`,\n    door = `d=\"M11.4 1.4v43.1h27.2V1.4H11.4zm23\
+        \ 23.4c0 1.1-.9 1.9-1.9 1.9h0c-1.1 0-1.9-.9-1.9-1.9V21c0-1.1.9-1.9 1.9-1.9h0c1.1 0 1.9.9 1.9 1.9v3.8z\"`;\n\n  if\
+        \ (variables.state_on && variables.timeout < 2000) {\n    return `\n      <style>\n        .state {\n          animation:\
+        \ state 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;\n        }\n        .opacity {\n          animation: opacity\
+        \ 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;\n        }\n        @keyframes state {\n          0% {\n   \
+        \         transform: none;\n            fill: #9da0a2;\n          }\n          100% {\n            transform: skewY(10deg)\
+        \ translate(4.5%, -3.9%) scaleX(0.8);\n            fill: #b68349;\n          }\n        }\n        @keyframes opacity\
+        \ {\n          0% {\n            opacity: 0;\n          }\n          100% {\n            opacity: 1;\n          }\n\
+        \        }\n      </style>\n      <svg viewBox=\"0 0 50 50\">\n        <path class=\"opacity\" ${room}/>\n       \
+        \ <path class=\"state\" ${door}/>\n      </svg>\n    `;\n  }\n\n  if (variables.state_on && variables.timeout > 2000)\
+        \ {\n    return `\n      <svg viewBox=\"0 0 50 50\">\n        <style>\n          .state_timeout_on {\n           \
+        \ transform: skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8);\n            fill: #b68349;\n          }\n        </style>\n\
+        \        <path ${room}/>\n        <path class=\"state_timeout_on\" ${door}/>\n      </svg>\n    `;\n  }\n\n  return\
+        \ variables.state === 'off' && variables.timeout < 2000 ? `\n    <style>\n      .state {\n        animation: state\
+        \ 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;\n      }\n      .opacity {\n        animation: opacity 0.4s\
+        \ cubic-bezier(0.250, 0.460, 0.450, 0.940) both;\n      }\n      .reverse {\n        animation-direction: reverse;\n\
+        \      }\n      @keyframes state {\n        0% {\n          transform: none;\n          fill: #9da0a2;\n        }\n\
+        \        100% {\n          transform: skewY(10deg) translate(4.5%, -3.9%) scaleX(0.8);\n          fill: #b68349;\n\
+        \        }\n      }\n      @keyframes opacity {\n        0% {\n          opacity: 0;\n        }\n        100% {\n\
+        \          opacity: 1;\n        }\n      }\n    </style>\n    <svg viewBox=\"0 0 50 50\">\n      <path class=\"opacity\
+        \ reverse\" ${room}/>\n      <path class=\"state reverse\" ${door}/>\n    </svg>\n  ` : `\n    <svg viewBox=\"0 0\
+        \ 50 50\">\n      <style>\n        .state_timeout_off {\n          fill: var(--state-icon-color);\n        }\n   \
+        \   </style>\n      <path class=\"state_timeout_off\" ${door}/>\n    </svg>\n  `;\n]]]\n"
+  icon_away:
+    state_display: Auto
+    styles:
+      card:
+      - transition: all 0.3s ease-out
+      custom_fields:
+        icon:
+        - width: 79%
+        - margin-left: -1%
+        - margin-top: -1%
+        - fill: '[[[ return variables.state_on ? ''#516d82'' : ''#9da0a2''; ]]]
+
+            '
+    custom_fields:
+      icon: "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n\
+        \        @keyframes on {\n          10%,\n          20%,\n          100% {\n            transform: rotateZ(0deg);\n\
+        \          }\n          30%,\n          50%,\n          70% {\n            transform: rotateZ(7deg);\n          }\n\
+        \          90% {\n            transform: rotateZ(3deg);\n          }\n          40%,\n          60%,\n          80%\
+        \ {\n            transform: rotateZ(-7deg);\n          }\n        }\n        .on {\n          animation: on 1.35s\
+        \ cubic-bezier(0.5, 1, 0.89, 1);\n          animation-fill-mode: both;\n          transform-origin: 70% 80%;\n   \
+        \       animation-delay: 0s;\n        }\n      </style>\n      <path class=\"${state}\" d=\"M32.1 18.4s.3-1.6.7-2.1c.3-.6.9-1.4\
+        \ 1.6-1.8.6-.4 1.1-.7 1.4-.7s.7-.1 1 .1.6.4.8 1.3l.3 2.7.1 2.4.2 4.1c0 .3.2 3.1.2 3.3s.2 2.7.2 3.2l-.1 2.5c.1 1.6.5\
+        \ 3.1-.2 4.6-.6 1.4-1.7 2.7-2.9 3.6-.5.4-1.9 1.3-2.9 1.7-1.1.5-2.2.8-3.3 1.1-.5.1-1.4.4-2.3.3s-1.8-.6-2.1-1l-1.6-2.3c-.6-.8-2.1-2.3-2.3-2.5l-2.7-2.8c-.2-.2-2.7-3.5-2.9-3.8l-3.1-4.7-1.8-3.2-1.5-2.8-.9-1.8c-.1-.2-.3-1.1-.2-1.4.3-1.2\
+        \ 1.4-1.4 2.3-.7.3.2.9 1 1.1 1.3s6.1 8.1 6.1 8.1c.2.3.7.3.9 0s-.1-.7-.2-.9c-.4-.6-8.3-11.5-8.3-11.5s-.6-.9-.7-1.1c-.3-1.1\
+        \ 0-2.3 1.1-2.7s1.9.3 2.6 1.1c.3.3 8.3 11.5 8.3 11.5.2.2.3.3.5.3.3 0 .5-.4.4-.7-.1-.2-.5-.9-.5-.9L11.8 9c-.6-1-.9-2-.1-3\
+        \ .7-.8 2.2-1.3 3-.2.3.3 10.1 14.3 10.1 14.3.2.2.5.4.7.3.5-.1.3-.7.1-1-.1-.2-8.4-11.8-8.4-11.8-.4-.9-.6-2 .2-2.8 1-1.1\
+        \ 2.5-.5 3.3.5.2.3 1 1.4 1 1.4l2.7 3.7c.1.2 3.4 4.4 3.8 4.8.9 1.1 1.8 2.2 2.7 3.2l.5.5c.1.1.1.4.1.8 0 1.3.1 2.6.1\
+        \ 3.9 0 .2.1.4.2.6.3.3.6.1.7-.2.1-.2 0-2.4 0-2.7-.3-.3-.5-1.3-.4-2.9zM12.2 46.9s-2.8-.8-4.8-2.7-2.6-2.7-2.8-3-1.8-3-2-3.6c-.2-.5-.2-.7.2-1\
+        \ .4-.4 1-.5 1.3.1.1.2.4 1 .5 1.2s1 1.9 1.7 2.8 1.6 2.2 4.4 3.8c.6.3 1.2.6 1.9.9.3.1.6.2.8.4.1.2.1.6-.1.8-.2.4-.7.4-1.1.3zM7.1\
+        \ 30.7l.9 3.1c.3.7 1.1 2.3 1.9 3.3s2.4 2.6 3.4 3.2 2 1.1 3 1.5c1 .3 1.1.4 1.2.5.3.4.2 1.2-.4 1.3-.2 0-1.2 0-1.8-.3L12\
+        \ 41.7c-.5-.4-3.9-3.1-5.1-6S5.3 31 5.2 30.4s-.2-1.1 0-1.4c.3-.4.9-.8 1.3-.3.2.3.3.6.3.9.1 0 .2.8.3 1.1zm26.8-25s.2-.1.5-.1.8.3\
+        \ 1.4.7 1.9 1 3.6 2.9 2.9 3.9 3.4 5.8c.5 1.8.8 3.1.9 5.5 0 .5.1 1.6 0 1.7-.2.5-.5.7-1 .7-.6 0-.7-.5-.7-1l-.1-2.9c-.1-.6-.3-1.9-.7-2.9-.3-1-.7-2.3-1.7-3.6-.9-1.3-2.1-2.8-3.2-3.5l-2.4-1.5c-.6-.6-.7-1.2\
+        \ 0-1.8zm4.9-2.5s.3-.2.5-.1c.2 0 .7.3.9.4s2.1 1.3 3.6 3c1.5 1.6 3.5 5.1 3.7 7.4.1.4.2.9 0 1-.2.2-.4.4-.7.4-.2 0-.5\
+        \ 0-.7-.1-.1-.2-.4-1.1-.4-1.3s-.6-2-1.1-3.1C44 9.7 43.5 8.5 42 7.1s-2.2-1.9-2.8-2.2-1.1-.6-1.1-1c.1-.3.3-.6.7-.7z\"\
+        />\n    </svg>\n  `;\n]]]\n"
+  icon_home:
+    state_display: Auto
+    styles:
+      card:
+      - transition: all 0.3s ease-out
+      custom_fields:
+        icon:
+        - width: 72%
+        - margin-left: -1%
+        - fill: '[[[ return variables.state_on ? ''#c7983e'' : ''#9da0a2''; ]]]
+
+            '
+    custom_fields:
+      icon: "[[[\n  let state = variables.state_on ? 'on' : null;\n  return `\n    <svg viewBox=\"0 0 50 50\">\n      <style>\n\
+        \        @keyframes on {\n          from,\n          20%,\n          40%,\n          60%,\n          80%,\n      \
+        \    to {\n            animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);\n          }\n          0%\
+        \ {\n            transform: scale(0.3);\n          }\n          20% {\n            transform: scale(1.1);\n      \
+        \    }\n          40% {\n            transform: scale(0.9);\n          }\n          60% {\n            transform:\
+        \ scale(1.03);\n          }\n          80% {\n            transform: scale(0.97);\n          }\n          to {\n \
+        \           transform: scale(1);\n          }\n        }\n        .on {\n          animation: on 1s;\n          transform-origin:\
+        \ center;\n        }\n      </style>\n      <path class=\"${state}\" d=\"M42.2 28.3c0-.8-.2-1-.2-1L26 12.1s-.5-.4-1-.4-1\
+        \ .3-1 .3L8.2 27.1c-.4.5-.4.9-.4.9v18.3c0 1.1.9 2 1.9 2h8.2a1.47 1.47 0 0 0 1.5-1.5v-14a1.47 1.47 0 0 1 1.5-1.5h8.4a1.47\
+        \ 1.47 0 0 1 1.5 1.5v14a1.47 1.47 0 0 0 1.5 1.5h8.2c1.1 0 2-.9 2-1.9 0-.2-.3-18.1-.3-18.1zM7.3 25l-1.6 1.5s-.3.3-.5.3-.5\
+        \ 0-.8-.2c-.2-.2-2-2.8-2-2.8s-.1-.4-.1-.7c.1-.3.2-.7.3-.8.4-.1 21.5-20.1 21.5-20.1s.4-.3.9-.3c.4 0 .8.1.9.2s.5.4.5.4l8.9\
+        \ 8.5V6s.1-.4.2-.7c.1-.2.3-.3.4-.3s.3-.1.3-.1h3s.3.1.4.3a1.08 1.08 0 0 1 .3.7v9.8l7.2 6.9s.2.3.3.4c.1.2.1.7.1.7 0\
+        \ .1-.1.4-.2.5s-1.6 2.5-1.6 2.5-.1.3-.3.3c-.2.1-.4.1-.7 0-.2-.1-.5-.4-.5-.4L26.4 9.4s-.3-.3-.5-.4-.4-.2-.8-.2-.5.1-.8.1c-.1.1-.4.3-.7.5C23.3\
+        \ 9.8 7.3 25 7.3 25z\"/>\n    </svg>\n  `;\n]]]\n"
+  icon_lock:
+    styles:
+      custom_fields:
+        icon:
+        - width: 72%
+        - margin-left: -10%
+    custom_fields:
+      icon: "[[[\n  const locked = entity && entity.state === 'locked';\n  const color = locked ? '#9da0a2' : '#3182b7';\n\
+        \  const shackle = locked\n    ? 'M16 22v-6a9 9 0 0 1 18 0v6'\n    : 'M16 22v-6a9 9 0 0 1 17.5-3';\n  return `<svg\
+        \ viewBox=\"0 0 50 50\">\n    <path d=\"${shackle}\" fill=\"none\" stroke=\"${color}\" stroke-width=\"4.2\" stroke-linecap=\"\
+        round\"/>\n    <rect x=\"11\" y=\"22\" width=\"28\" height=\"22\" rx=\"5\" fill=\"${color}\"/>\n    <circle cx=\"\
+        25\" cy=\"31.5\" r=\"2.8\" fill=\"#1c2021\"/>\n    <path d=\"M25 33v4.5\" stroke=\"#1c2021\" stroke-width=\"2.4\"\
+        \ stroke-linecap=\"round\"/>\n  </svg>`;\n]]]"
+views:
+- path: home
+  title: Home
+  icon: mdi:home-outline
+  type: custom:grid-layout
+  background: center / cover no-repeat fixed url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAPEAIAAAAhVkTPAAAACXBIWXMAAC4jAAAuIwF4pT92AAAPd2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIiB4bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMDktMjBUMDg6Mzg6NDkrMDI6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjAtMDItMThUMDc6MjY6MTMrMDE6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDIwLTAyLTE4VDA3OjI2OjEzKzAxOjAwIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmQ3MDI5YTFkLTM0OTQtNGYyYS05Y2RkLTA4YjQ2NjExODliOCIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjgxMDBjOWY2LWEwYWMtYTQ0YS04NDljLWYwYzI3NjM1ZDFiNyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmE0NTY4MmYzLTA5OGUtNDQ1ZS04ZTYzLTM5MDkxYTA5MWNhMSIgdGlmZjpPcmllbnRhdGlvbj0iMSIgdGlmZjpYUmVzb2x1dGlvbj0iMzAwMDAwMC8xMDAwMCIgdGlmZjpZUmVzb2x1dGlvbj0iMzAwMDAwMC8xMDAwMCIgdGlmZjpSZXNvbHV0aW9uVW5pdD0iMiIgZXhpZjpDb2xvclNwYWNlPSIxIiBleGlmOlBpeGVsWERpbWVuc2lvbj0iMTkyMCIgZXhpZjpQaXhlbFlEaW1lbnNpb249IjEyMDAiPiA8cGhvdG9zaG9wOkRvY3VtZW50QW5jZXN0b3JzPiA8cmRmOkJhZz4gPHJkZjpsaT4wREE1NzlDQjExRDU5RjcxMjM2QUNFREM1NkU5RDYyRjwvcmRmOmxpPiA8cmRmOmxpPjBGOEI0MkQwNjAzMUQwMzc3NkYyNEI2OThDNjBCMTlFPC9yZGY6bGk+IDxyZGY6bGk+MjI3QTBENjBBREUxRDZBMDcyRDZEQjk4QUFGQUFGOEU8L3JkZjpsaT4gPHJkZjpsaT4zM0QzNkVCNzYyQzA3MENDRDA2M0IyQzcxODRCMzg3NTwvcmRmOmxpPiA8cmRmOmxpPjRFMDkyRjE3MTBDREVBQzEwRTk0Q0Q4RDBDNzU5QkRFPC9yZGY6bGk+IDxyZGY6bGk+NTUyOEQzQ0U5MUQ3MkU1MEUxMTM4MjRBODE3OTdCNDA8L3JkZjpsaT4gPHJkZjpsaT42Q0Q3QjZDNzAzNDlBNzcxMDZEMjcyQUQ1QTQ2RTBFRjwvcmRmOmxpPiA8cmRmOmxpPjhEODkyNjA4OEFEODBEMTkwQUNCQzdBOTZCNTNDOTQxPC9yZGY6bGk+IDxyZGY6bGk+OEZDODlCRDBBNzU4REZDNkM0NzNGNzk4NkZDRUMyNDI8L3JkZjpsaT4gPHJkZjpsaT5FMkY5OTcwOTZFQjdERkQ0Rjc4MTg0MDc4QzFCRTlDOTwvcmRmOmxpPiA8cmRmOmxpPkVCMDI1QkQxQTI1MUUxNUM3MjEwMTMyOTc4ODM3NTMxPC9yZGY6bGk+IDxyZGY6bGk+RjMyRDQzQTFEMENBOTI1MUMxMDAzOTQ3NUVDQkEyRjM8L3JkZjpsaT4gPHJkZjpsaT5GRjlDQjQzREJDMDQxNkRBNUNGNjJBRDhBQzY4RUVBNzwvcmRmOmxpPiA8cmRmOmxpPmFkb2JlOmRvY2lkOnBob3Rvc2hvcDo0MjkzMjQwMi00YTczLTExN2ItOTllYy1iMWVjYWY0Mzk3MTc8L3JkZjpsaT4gPHJkZjpsaT5hZG9iZTpkb2NpZDpwaG90b3Nob3A6OGE5ZTA2NTItNGE3My0xMTdiLTk5ZWMtYjFlY2FmNDM5NzE3PC9yZGY6bGk+IDxyZGY6bGk+YWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOmM4NGQ3OGVkLTA5YjEtMTE3ZC1iZDQ2LWNmMWRkOWMyM2RmNjwvcmRmOmxpPiA8cmRmOmxpPnhtcC5kaWQ6YTQ1NjgyZjMtMDk4ZS00NDVlLThlNjMtMzkwOTFhMDkxY2ExPC9yZGY6bGk+IDwvcmRmOkJhZz4gPC9waG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6YTQ1NjgyZjMtMDk4ZS00NDVlLThlNjMtMzkwOTFhMDkxY2ExIiBzdEV2dDp3aGVuPSIyMDE5LTA5LTIwVDA4OjM4OjQ5KzAyOjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6NzVjN2M5NDctOTk4Mi00NTkwLThmNmUtYzk3ODAzYTQxNjcxIiBzdEV2dDp3aGVuPSIyMDE5LTA5LTIwVDA5OjQ0OjMwKzAyOjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6ZTQ1OWUxYjItMmIxNy00ZjBhLWJlMjItNGZjMGE0MTRjYThkIiBzdEV2dDp3aGVuPSIyMDIwLTAxLTEyVDIxOjE0OjMwKzAxOjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY29udmVydGVkIiBzdEV2dDpwYXJhbWV0ZXJzPSJmcm9tIGFwcGxpY2F0aW9uL3ZuZC5hZG9iZS5waG90b3Nob3AgdG8gaW1hZ2UvcG5nIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJkZXJpdmVkIiBzdEV2dDpwYXJhbWV0ZXJzPSJjb252ZXJ0ZWQgZnJvbSBhcHBsaWNhdGlvbi92bmQuYWRvYmUucGhvdG9zaG9wIHRvIGltYWdlL3BuZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6OWQ1OTc3NWYtODBlNy00YTM2LWIyZGItYTI1NWM4ZmE3MDAyIiBzdEV2dDp3aGVuPSIyMDIwLTAxLTEyVDIxOjE0OjMwKzAxOjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6ZDcwMjlhMWQtMzQ5NC00ZjJhLTljZGQtMDhiNDY2MTE4OWI4IiBzdEV2dDp3aGVuPSIyMDIwLTAyLTE4VDA3OjI2OjEzKzAxOjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6ZTQ1OWUxYjItMmIxNy00ZjBhLWJlMjItNGZjMGE0MTRjYThkIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOmE0NTY4MmYzLTA5OGUtNDQ1ZS04ZTYzLTM5MDkxYTA5MWNhMSIgc3RSZWY6b3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmE0NTY4MmYzLTA5OGUtNDQ1ZS04ZTYzLTM5MDkxYTA5MWNhMSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PtGZ/GsAAAZzSURBVEgNBcEBRNz9Hwfw9+f7++2eZPZPkuQxmSSTM3MykzxyzmTOI0nOmUwmyUmSJMlMkiRJkjMnmUxOzt9kTpIkk5lJkkmSZJLMZK77vd/P6+X/73llddWg63B575f/41763o97b0KnoUd/DYQGQ0uhD6HwX52hwXvX98q9Rq/Ka7A3rtWlrB8pDKPWRvAOfdi2C1uxG7uP5zZjUxjQJKb5TlnO8StreMlPJG9Yqla28j0P9AXN+FcJjWoEo+hAt17wh5yufPSjD7321pL4iiUU1YNh/WQF25jjGCuDYnG2mLSwxVmpZjZaC+YsihMQx3hmMfPt2sos7ebdsTvHsQ1ZGA6ziHCR7fwZTDLPUx5wl7e85DCPeKIWLeiDSpjCoM5xrC/4rah+q0QVvsu6jJt3vyzjVl0XSqwWS8phB9Oa45JqNckMx/g9aMIAwvqgFXTiSk4JdeESQ3bkUm7fTbuY1+6GbNbiLqmo3mqY71XDqiAXbPIRHSOMsV5NivGSrWzV//mOecVVUKvK4KtaBf7Ste99ckvevMt4cffaoq5ov10Fcjq2LJZV4aYxioi3a/XodrfWhxIN4xSrbNQohlSFNRVQpiin9ZJzqFfc1rWjDg2pMuhjnI7zXFMTO5RmhClOqlkNLGUFo9xjnjEm2KG8MsprX3366LuE1+5ibs/2XNZiOMMGcrhEyqLwce2e2QVO/BIvbHt+v1fn/sChHbO80b8qsE77eqxabVlUdXiprwprWef8xfvq5jRXWcISDvJI51rEC7zRqUIaUIWe6Ic2ta0JrSnLVjYxohvOcsy37ziyI9ThRMcKyWFNC+riQ1WwNchhnxNBzi2oyfvkdVveVboWd+TeYgKHyHKDo9gMOvhbw8ECb3VcbGRYq2wJThjiarDEAj9qQR2qVAzfVYekUmxhP0cY4RV7+Idn3FMz0/zBRX7iua+iblQuX2cox0u8YVEZfrMl28Cwru/aXMS++SNuFa3eZ/utcZfyv7gt12GztmPHgMJIY0xxlnODD3UVzPIqmLi7CjLFR8EZHQ+1rVJd6ym+qgF9WFFah4pomq3sYg9bCW7wlGfq5Q2v/WCTI8EE5tSkWmxoW7v20F5hAm3qcGPWqzlVWULL/Iwt/QxeaplX3qWf8wZcBZIIo8BpXqmc/UFPsB7gLsd0kCx2cay4G2yzkRds1pUOldWY/sZHHKpNjYrpi0b1Q3vsYoLNvE+nJyxlqc+3wVHwUT2qUTX+4KlSlsOghVWnZT3DW6yoHjm0aAdF1bOJCca9uns1fqOXdymL23WQU0qpu85iLcfvosXaYLyYLsb5MJgMIqwPsryvL9rShU7Uom2sYBgdKlOfnqlKXZrTU62zkc91xL/Z5jMUhII/aFa7RlG0BQvDtzxudKG/McoabaG92M8HajQ/SPMfJGzALjkK2j8u5kZchms6Q89dMqjTZjHKlFDcYqnmghrecpez/KlFpZnTkqKoV5sWlVQSHxVXBZrUqQKvmdScyjTCVz4Hg92gF2MWwq3ldOuK9tl7Yi/sgT1wb63KFt1jHNqaK2NBGdd9t8UGG1Izh6zMelCwGk2rCz3FgvZctPhJpVzljhzKNKk9dDHNvHbl1MdJpfRKz7GmXvQiixY1KKOfKtGWonqiFr1EwteFxtRrjXBoRdzG1YApRBCzTfttBffGjbsZK7V/3ZE6UbAq1mobyWIda3FgFWiw1zhHGV7RoWBpXSPlZtSJr3ygsBbwDL3o1ojeaxADmEYzvmMF0KT6NYq4ovqDJKI4x3OkUYuIj3E1aEUZdNsL67Q5zaBJB4phWJs612Mua5Lj2OCCddu8TXFd/1jarWPGcm5Fy/YT3y1mZdrCe7zEYwtb1t5YpcWQtW9WiktMWdYSNqSMJrRiXSi1GSSQQDVu7RGusa4GzOA+ylEC+ijBMQoIYR/UiqYwrD1ldRnkOca8KjFSbLST4MD6sGYDqLMhO7C8TQWpYMHVertepZt3FV4/aixiC2jXri7Ri1eIW9a+26ntuw6L4pCLLoENG9Ag8srYFF5Ym2a1y31sYxMJLKBSI1r10Y8n1oxyHOEZXmNHq1zXqV6jOngaRHnOPc5bF6p1gIJ2kMe0vbfPrsmdug+u4G14X23bVbtVK3Wf3AVy+GjLqkSPklaPcUzaA7u1W32zMJotjHY8VL+9wJl1CdhHnX3BZ41rRcNweIDIf0M1RYisi586AAAAAElFTkSuQmCC")
+  layout:
+    margin: 0
+    grid-gap: 3.0vw
+    grid-template-columns: 1.15fr 1fr 1fr 1fr 0px
+    grid-template-rows: 0px repeat(2, fit-content(100%)) auto 0px
+    grid-template-areas: '"sidebar  .        .           .        ."
+
+      "sidebar  sala     escritorio  suite    ."
+
+      "sidebar  media    cozinha     casa     ."
+
+      "sidebar  footer   footer      footer   ."
+
+      "popups   popups   popups      popups   ."'
+    mediaquery:
+      '(max-width: 1200px)':
+        grid-gap: 3.0vw
+        grid-template-columns: 1.1fr 1fr 1fr 0px
+        grid-template-rows: 0px repeat(3, fit-content(100%)) auto 0px
+        grid-template-areas: '"sidebar  .           .        ."
+
+          "sidebar  sala        suite    ."
+
+          "sidebar  escritorio  cozinha  ."
+
+          "sidebar  media       casa     ."
+
+          "sidebar  footer      footer   ."
+
+          "popups   popups      popups   ."'
+      '(max-width: 800px)':
+        grid-gap: 4.8vw
+        grid-template-columns: 0px repeat(2, 1fr) 0px
+        grid-template-rows: 0px repeat(5, fit-content(100%)) auto 0px
+        grid-template-areas: '".       .           .        ."
+
+          ".       sidebar     sidebar  ."
+
+          ".       sala        suite    ."
+
+          ".       escritorio  cozinha  ."
+
+          ".       media       casa     ."
+
+          ".       footer      footer   ."
+
+          "popups  popups      popups   ."'
+  cards:
+  - type: vertical-stack
+    view_layout:
+      grid-area: sidebar
+    card_mod:
+      style: "\n                              ha-card, #root {\n                                background-color: rgba(0,\
+        \ 0, 0, 0.10);\n                                border-radius: 0;\n                                border-right: 1px\
+        \ solid rgba(255, 255, 255, 0.06);\n                                min-height: 100vh;\n                         \
+        \     }\n                              @media screen and (max-width: 800px) {\n                                ha-card,\
+        \ #root {\n                                  background-color: transparent;\n                                  border-right:\
+        \ none;\n                                  min-height: auto;\n                                }\n                \
+        \              }\n                            "
+    cards:
+    - type: custom:button-card
+      entity: weather.openweathermap
+      template: sidebar
+  - type: grid
+    title: Sala
+    view_layout:
+      grid-area: sala
+    columns: 2
+    card_mod: &id001
+      style:
+        .: "\n              hui-grid-card {\n                padding-bottom: 1vw;\n              }\n            "
+        $: "\n              h1 {\n                font-size: 2.3vw !important;\n                line-height: 1.1 !important;\n\
+          \                font-weight: 600 !important;\n                color: rgba(255, 255, 255, 0.82) !important;\n  \
+          \              padding: 0.2vw 0 1.4vw 0 !important;\n                margin: 0 !important;\n                letter-spacing:\
+          \ -0.02vw !important;\n                width: 100%;\n              }\n              @media screen and (max-width:\
+          \ 1200px) {\n                h1 {\n                  font-size: 3.3vw !important;\n                  padding: 0.4vw\
+          \ 0 1.8vw 0 !important;\n                }\n              }\n              @media screen and (max-width: 800px)\
+          \ {\n                h1 {\n                  font-size: 5.5vw !important;\n                  line-height: 1.2 !important;\n\
+          \                  padding: 2vw 0 2.5vw 0 !important;\n                }\n              }\n            "
+    cards:
+    - type: custom:button-card
+      entity: light.sala_central
+      name: Central
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-sala'
+      template:
+      - light
+      - icon_hue
+    - type: custom:button-card
+      entity: light.sala_led_sofa
+      name: LED Sofá
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-sala'
+      template:
+      - light
+      - icon_shade
+    - type: custom:button-card
+      entity: media_player.tv_sala_androidtv
+      name: TV Sala
+      state_display: '[[[ return variables.state === ''playing'' || variables.state === ''on'' ? ''Ligada'' : ''Desligada'';
+        ]]]'
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-sala'
+      template:
+      - base
+      - icon_tv
+      - loader
+    - type: custom:button-card
+      entity: light.sala_mesa_jantar
+      name: Jantar
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-sala'
+      template:
+      - light
+      - icon_spot
+  - type: grid
+    title: Escritório
+    view_layout:
+      grid-area: escritorio
+    columns: 2
+    card_mod: *id001
+    cards:
+    - type: custom:button-card
+      entity: light.escritorio_spot_escritorio_led
+      name: Spot LED
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-escritorio'
+      template:
+      - light
+      - icon_spot
+    - type: custom:button-card
+      entity: climate.escritorio_ar_condicionado
+      name: Ar-Cond.
+      tap_action:
+        action: toggle
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-escritorio'
+      template:
+      - base
+      - icon_climate
+      - circle
+      - loader
+      variables:
+        circle_input: "[[[\n  if (entity) {\n      const t = entity.state !== 'off' && entity.attributes.temperature != null\n\
+          \          ? entity.attributes.temperature\n          : entity.attributes.current_temperature;\n      return t !=\
+          \ null ? Math.round(t).toString() : '';\n  }\n]]]"
+        circle_input_unit: °C
+    - type: custom:button-card
+      entity: switch.escritorio_computador
+      name: Computador
+      triggers_update:
+      - sensor.escritorio_computador_power
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-escritorio'
+      template:
+      - base
+      - icon_imac
+      - circle
+      - loader
+      variables:
+        circle_input: "[[[\n  const p = parseFloat(states['sensor.escritorio_computador_power']?.state);\n  return !Number.isNaN(p)\
+          \ ? Math.round(p).toString() : '';\n]]]"
+        circle_input_unit: W
+    - type: custom:button-card
+      entity: switch.escritorio_monitor
+      name: Monitor
+      triggers_update:
+      - sensor.monitor_energy_power
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-escritorio'
+      template:
+      - base
+      - icon_monitors
+      - circle
+      - loader
+      variables:
+        circle_input: "[[[\n  const p = parseFloat(states['sensor.monitor_energy_power']?.state);\n  return !Number.isNaN(p)\
+          \ ? Math.round(p).toString() : '';\n]]]"
+        circle_input_unit: W
+  - type: grid
+    title: Suíte
+    view_layout:
+      grid-area: suite
+    columns: 2
+    card_mod: *id001
+    cards:
+    - type: custom:button-card
+      entity: light.suite_ventilador
+      name: Luz Suíte
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-suite'
+      template:
+      - light
+      - icon_lamp
+    - type: custom:button-card
+      entity: switch.suite_ac
+      name: AC Suíte
+      triggers_update:
+      - sensor.0xa4c1388ad4a9a0b6_temperature
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-suite'
+      template:
+      - base
+      - icon_climate
+      - circle
+      - loader
+      variables:
+        circle_always: true
+        circle_input: "[[[\n  const t = parseFloat(states['sensor.0xa4c1388ad4a9a0b6_temperature']?.state);\n  return !Number.isNaN(t)\
+          \ ? Math.round(t).toString() : '';\n]]]"
+        circle_input_unit: °C
+    - type: custom:button-card
+      entity: fan.suite_ventilador_2
+      name: Ventilador
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-suite'
+      template:
+      - base
+      - icon_fan2
+      - loader
+    - type: custom:button-card
+      entity: media_player.tv_samsung_suite
+      name: TV Suíte
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-suite'
+      template:
+      - base
+      - icon_tv
+      - loader
+  - type: grid
+    title: Mídia
+    view_layout:
+      grid-area: media
+    columns: 1
+    card_mod: *id001
+    cards:
+    - type: custom:swipe-card
+      parameters:
+        speed: 550
+        spaceBetween: 28
+        threshold: 5
+      cards:
+      - type: custom:button-card
+        entity: media_player.tv_sala_androidtv
+        template:
+        - conditional_media
+      - type: grid
+        columns: 2
+        cards:
+        - type: custom:button-card
+          entity: media_player.tv_sala_androidtv
+          name: TV Sala
+          template:
+          - media
+          - icon_tv
+        - type: custom:button-card
+          entity: media_player.sala_echo_show_8
+          name: Echo Show
+          template:
+          - media
+          - icon_nest_mini
+        - type: custom:button-card
+          entity: media_player.suite_echo_dot_suite
+          name: Echo Suíte
+          template:
+          - media
+          - icon_nest_mini
+        - type: custom:button-card
+          entity: media_player.google_home_escritorio
+          name: Escritório
+          template:
+          - media
+          - icon_spotify
+  - type: grid
+    title: Cozinha
+    view_layout:
+      grid-area: cozinha
+    columns: 2
+    card_mod: *id001
+    cards:
+    - type: custom:button-card
+      entity: light.cozinha_central
+      name: Cozinha
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-cozinha'
+      template:
+      - light
+      - icon_hue
+    - type: custom:button-card
+      entity: light.cozinha_bancada
+      name: Bancada
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-cozinha'
+      template:
+      - light
+      - icon_spot
+    - type: custom:button-card
+      entity: light.hall_light_switch_bottom
+      name: Varanda
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-cozinha'
+      template:
+      - light
+      - icon_shade
+    - type: custom:button-card
+      entity: light.sala_banh_social
+      name: Banh. Social
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-sala'
+      template:
+      - light
+      - icon_bathroom
+  - type: grid
+    title: Casa
+    view_layout:
+      grid-area: casa
+    columns: 2
+    card_mod: *id001
+    cards:
+    - type: custom:button-card
+      entity: person.edgard_mello
+      name: Edgard
+      template:
+      - person
+    - type: custom:button-card
+      entity: person.ana_maria
+      name: Ana Maria
+      template:
+      - person
+    - type: custom:button-card
+      entity: lock.kuanttum_delta_pro_operate_lock
+      name: Fechadura
+      tap_action:
+        action: more-info
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-cameras'
+      template:
+      - base
+      - icon_lock
+    - type: custom:button-card
+      entity: input_boolean.modo_visitas
+      name: Modo Visitas
+      double_tap_action:
+        action: navigate
+        navigation_path: '#popup-cameras'
+      template:
+      - base
+      - icon_home
+      - loader
+  - type: horizontal-stack
+    view_layout:
+      grid-area: footer
+    card_mod:
+      style:
+        $: "\n                                  #root {\n                                    flex-wrap: wrap;\n          \
+          \                          justify-content: flex-start;\n                                    gap: 0.9vw;\n     \
+          \                               overflow: visible;\n                                    padding-bottom: 1.8vw;\n\
+          \                                  }\n                                  @media screen and (min-width: 1200px) {\n\
+          \                                    #root {\n                                      flex-wrap: nowrap;\n       \
+          \                               justify-content: space-between;\n                                    }\n       \
+          \                           }\n                                  @media screen and (max-width: 800px) {\n      \
+          \                              #root {\n                                      justify-content: center;\n       \
+          \                               padding-top: 2vw;\n                                      padding-bottom: 4vw;\n\
+          \                                    }\n                                  }\n                                "
+    cards:
+    - type: custom:button-card
+      name: <ha-icon icon="mdi:server"></ha-icon> Sistema
+      tap_action:
+        action: navigate
+        navigation_path: '#popup-sistema'
+      triggers_update:
+      - sensor.system_monitor_processor_use
+      - sensor.system_monitor_memory_usage
+      - sensor.system_monitor_disk_usage
+      - binary_sensor.zigbee2mqtt_bridge_connection_state
+      - binary_sensor.pihole_status
+      variables:
+        notify: "[[[\n  const cpu = parseFloat(states['sensor.system_monitor_processor_use']?.state) || 0;\n  const mem =\
+          \ parseFloat(states['sensor.system_monitor_memory_usage']?.state) || 0;\n  const dsk = parseFloat(states['sensor.system_monitor_disk_usage']?.state)\
+          \ || 0;\n  const z2m = states['binary_sensor.zigbee2mqtt_bridge_connection_state']?.state;\n  const ph = states['binary_sensor.pihole_status']?.state;\n\
+          \  return cpu >= 85 || mem >= 90 || dsk >= 85 || z2m === 'off' || ph === 'off';\n]]]"
+      template: footer
+    - type: custom:button-card
+      name: <ha-icon icon="mdi:lightning-bolt"></ha-icon> Energia
+      tap_action:
+        action: navigate
+        navigation_path: '#popup-energia'
+      triggers_update:
+      - sensor.river2_battery_level
+      - sensor.sala_varanda_escritorio_power
+      variables:
+        notify: "[[[\n  const bat = parseFloat(states['sensor.river2_battery_level']?.state);\n  return !Number.isNaN(bat)\
+          \ && bat <= 25;\n]]]"
+      template: footer
+    - type: custom:button-card
+      name: <ha-icon icon="mdi:robot-vacuum-variant"></ha-icon> Aspirador
+      tap_action:
+        action: navigate
+        navigation_path: '#popup-aspirador'
+      triggers_update:
+      - vacuum.escritorio_eufy_x10_pro
+      variables:
+        notify: '[[[ return [''cleaning'', ''error''].includes(states[''vacuum.escritorio_eufy_x10_pro'']?.state); ]]]'
+      template: footer
+    - type: custom:button-card
+      name: <ha-icon icon="mdi:thermometer"></ha-icon> Clima
+      tap_action:
+        action: navigate
+        navigation_path: '#popup-clima'
+      template: footer
+    - type: custom:button-card
+      name: <ha-icon icon="mdi:cctv"></ha-icon> Câmeras
+      tap_action:
+        action: navigate
+        navigation_path: '#popup-cameras'
+      triggers_update:
+      - lock.kuanttum_delta_pro_operate_lock
+      variables:
+        notify: '[[[ return states[''lock.kuanttum_delta_pro_operate_lock'']?.state === ''unlocked''; ]]]'
+      template: footer
+    - type: custom:button-card
+      name: <ha-icon icon="mdi:arrow-up-bold-circle-outline"></ha-icon> Updates
+      tap_action:
+        action: navigate
+        navigation_path: '#popup-updates'
+      triggers_update: all
+      variables:
+        notify: "[[[\n  let count = 0;\n  for (const [eid, st] of Object.entries(states)) {\n    if (eid.startsWith('update.')\
+          \ && st.state === 'on') count++;\n  }\n  return count;\n]]]"
+      template: footer
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-sala'
+      name: Sala
+      icon: mdi:sofa
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: entities
+      title: Iluminação da Sala
+      show_header_toggle: true
+      entities:
+      - entity: light.sala_central
+        name: Central Sala
+      - entity: light.sala_led_sofa
+        name: LED Sofá
+      - entity: light.sala_spot_sofa
+        name: Spot Sofá
+      - entity: light.sala_mesa_jantar
+        name: Mesa de Jantar
+      - entity: light.sala_entrada
+        name: Entrada Sala
+      - entity: light.sala_banh_social
+        name: Banheiro Social
+    - type: entities
+      title: Dispositivos & Presença
+      show_header_toggle: false
+      entities:
+      - entity: media_player.tv_sala_androidtv
+        name: TV Sala
+      - entity: switch.sala_ac
+        name: AC Sala
+      - entity: media_player.sala_echo_show_8
+        name: Echo Show 8
+      - entity: binary_sensor.0x00158d0005bd5c27_occupancy
+        name: Presença Sala
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-escritorio'
+      name: Escritório
+      icon: mdi:desk
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: custom:mushroom-climate-card
+      entity: climate.escritorio_ar_condicionado
+      name: Ar-Condicionado Escritório
+      show_temperature_control: true
+      hvac_modes:
+      - 'off'
+      - cool
+      - dry
+      - fan_only
+      - auto
+      collapsible_controls: false
+    - type: entities
+      title: Equipamentos & Energia
+      show_header_toggle: false
+      entities:
+      - entity: light.escritorio_spot_escritorio_led
+        name: Spot LED Escritório
+      - entity: switch.escritorio_computador
+        name: Computador
+      - entity: sensor.escritorio_computador_power
+        name: Potência PC
+      - entity: switch.escritorio_monitor
+        name: Monitor
+      - entity: sensor.monitor_energy_power
+        name: Potência Monitor
+      - entity: sensor.escritorio_ar_condicionado_real_time_power
+        name: Potência AC
+      - entity: sensor.escritorio_potencia_total
+        name: Potência Total Escritório
+      - entity: sensor.0xa4c13818e2a13578_temperature
+        name: Temperatura
+      - entity: sensor.0xa4c13818e2a13578_humidity
+        name: Umidade
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-suite'
+      name: Suíte
+      icon: mdi:bed
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: entities
+      title: Iluminação & Clima
+      show_header_toggle: false
+      entities:
+      - entity: light.suite_ventilador
+        name: Luz Suíte
+      - entity: light.suite_closet
+        name: Closet
+      - entity: light.quarto_suite_banheiro_espelho
+        name: Espelho Banheiro
+      - entity: switch.suite_ac
+        name: AC Suíte (Tomada)
+      - entity: sensor.suite_ac_energy_power
+        name: Potência AC Suíte
+      - entity: fan.suite_ventilador_2
+        name: Ventilador Suíte
+      - entity: media_player.tv_samsung_suite
+        name: TV Samsung Suíte
+      - entity: sensor.0xa4c1388ad4a9a0b6_temperature
+        name: Temperatura Suíte
+      - entity: sensor.0xa4c1388ad4a9a0b6_humidity
+        name: Umidade Suíte
+    - type: grid
+      columns: 2
+      square: false
+      cards:
+      - type: custom:mushroom-entity-card
+        entity: script.ligar_desligar_ac_quarto
+        name: Ligar / Desligar AC
+        icon: mdi:snowflake
+        tap_action:
+          action: perform-action
+          perform_action: script.ligar_desligar_ac_quarto
+      - type: custom:mushroom-entity-card
+        entity: input_boolean.suite_ac_sleep_mode
+        name: Modo Sleep
+        icon: mdi:weather-night
+        tap_action:
+          action: toggle
+      - type: custom:mushroom-entity-card
+        entity: timer.suite_ac
+        name: Timer AC Suíte
+        icon: mdi:timer-outline
+      - type: custom:mushroom-entity-card
+        entity: timer.suite_fan
+        name: Timer Ventilador
+        icon: mdi:fan-clock
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-cozinha'
+      name: Cozinha & Varanda
+      icon: mdi:countertop
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: entities
+      title: Luzes & Tomadas
+      show_header_toggle: true
+      entities:
+      - entity: light.cozinha_central
+        name: Central Cozinha
+      - entity: light.cozinha_bancada
+        name: Bancada
+      - entity: light.cozinha_lavanderia
+        name: Lavanderia
+      - entity: light.hall_light_switch_top
+        name: Corredor
+      - entity: light.hall_light_switch_bottom
+        name: Varanda
+      - entity: switch.varanda_churrasqueira
+        name: Churrasqueira
+    - type: entities
+      title: Sensores
+      show_header_toggle: false
+      entities:
+      - entity: sensor.0xa4c138f397b856f0_temperature
+        name: Temperatura Cozinha
+      - entity: sensor.0xa4c138f397b856f0_humidity
+        name: Umidade Cozinha
+      - entity: sensor.0x00158d00048740a5_temperature
+        name: Temperatura Varanda
+      - entity: binary_sensor.hlk_ld2410_2302_occupancy
+        name: Presença Cozinha
+      - entity: binary_sensor.0x00158d0004110926_occupancy
+        name: Presença Varanda
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-sistema'
+      name: Sistema & Servidor
+      icon: mdi:server
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: custom:mini-graph-card
+      name: CPU & Memória (24h)
+      hours_to_show: 24
+      points_per_hour: 2
+      line_width: 2
+      animate: true
+      entities:
+      - entity: sensor.system_monitor_processor_use
+        name: CPU
+        color: '#3182b7'
+      - entity: sensor.system_monitor_memory_usage
+        name: RAM
+        color: '#8b6bd6'
+    - type: entities
+      title: Host & Serviços
+      show_header_toggle: false
+      entities:
+      - entity: sensor.system_monitor_processor_use
+        name: Uso de CPU
+      - entity: sensor.system_monitor_processor_temperature
+        name: Temperatura CPU
+      - entity: sensor.system_monitor_memory_usage
+        name: Uso de Memória
+      - entity: sensor.system_monitor_disk_usage
+        name: Uso de Disco
+      - entity: sensor.system_monitor_disk_free
+        name: Disco Livre
+      - entity: sensor.system_monitor_last_boot
+        name: Último Boot
+      - entity: binary_sensor.zigbee2mqtt_bridge_connection_state
+        name: Zigbee2MQTT
+      - entity: binary_sensor.pihole_status
+        name: Pi-hole
+      - entity: sensor.fast_com_download
+        name: Velocidade Internet
+      - entity: sensor.backup_last_successful_automatic_backup
+        name: Último Backup
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-energia'
+      name: Energia & UPS
+      icon: mdi:lightning-bolt
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: custom:mini-graph-card
+      name: Potência Instantânea (24h)
+      hours_to_show: 24
+      points_per_hour: 2
+      line_width: 2
+      animate: true
+      entities:
+      - entity: sensor.sala_varanda_escritorio_power
+        name: Sala/Var/Escr
+        color: '#3182b7'
+      - entity: sensor.escritorio_potencia_total
+        name: Escritório
+        color: '#e5a93c'
+    - type: entities
+      title: Consumo & Fatura
+      show_header_toggle: false
+      entities:
+      - entity: sensor.sala_varanda_escritorio_power
+        name: Potência Sala/Varanda/Escritório
+      - entity: sensor.escritorio_potencia_total
+        name: Potência Total Escritório
+      - entity: sensor.daily_energy
+        name: Consumo Hoje
+      - entity: sensor.weekly_energy
+        name: Consumo Semana
+      - entity: sensor.monthly_energy
+        name: Consumo Mês
+      - entity: sensor.monthly_energy_cost
+        name: Custo Atual Mês
+      - entity: sensor.projecao_consumo_mensal
+        name: Projeção Mensal (kWh)
+      - entity: sensor.projecao_custo_mensal
+        name: Projeção Mensal (R$)
+    - type: entities
+      title: EcoFlow River 2 (Nobreak)
+      show_header_toggle: false
+      entities:
+      - entity: sensor.river2_battery_level
+        name: Bateria River 2
+      - entity: sensor.river2_total_in_power
+        name: Entrada (W)
+      - entity: sensor.river2_total_out_power
+        name: Saída (W)
+      - entity: sensor.river2_battery_temperature
+        name: Temperatura Bateria
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-aspirador'
+      name: Eufy X10 Pro
+      icon: mdi:robot-vacuum-variant
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: custom:mushroom-vacuum-card
+      entity: vacuum.escritorio_eufy_x10_pro
+      name: Eufy X10 Pro
+      commands:
+      - start_pause
+      - stop
+      - return_home
+      - locate
+      icon_animation: true
+    - type: custom:mushroom-entity-card
+      entity: script.eufy_x10_varrer_e_passar_pano
+      name: Varrer Casa Toda + Passar Pano
+      icon: mdi:broom
+      tap_action:
+        action: perform-action
+        perform_action: script.eufy_x10_varrer_e_passar_pano
+    - type: picture-entity
+      entity: camera.escritorio_eufy_x10_pro_map
+      show_name: false
+      show_state: false
+    - type: entities
+      show_header_toggle: false
+      entities:
+      - entity: sensor.escritorio_eufy_x10_pro_battery
+        name: Bateria
+      - entity: select.escritorio_eufy_x10_pro_cleaning_mode
+        name: Modo de Limpeza
+      - entity: select.escritorio_eufy_x10_pro_cleaning_intensity
+        name: Intensidade
+      - entity: sensor.escritorio_eufy_x10_pro_cleaning_area
+        name: Última Área
+      - entity: sensor.escritorio_eufy_x10_pro_cleaning_time
+        name: Último Tempo
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-clima'
+      name: Clima & Ambientes
+      icon: mdi:thermometer
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: weather-forecast
+      entity: weather.openweathermap
+      name: Tempo Agora
+      show_current: true
+      show_forecast: false
+    - type: custom:mini-graph-card
+      name: Temperaturas (24h)
+      hours_to_show: 24
+      points_per_hour: 1
+      line_width: 2
+      entities:
+      - entity: sensor.0xa4c13818e2a13578_temperature
+        name: Escritório
+        color: '#3182b7'
+      - entity: sensor.0xa4c1388ad4a9a0b6_temperature
+        name: Suíte
+        color: '#5ec49f'
+      - entity: sensor.0xa4c138f397b856f0_temperature
+        name: Cozinha
+        color: '#e5a93c'
+      - entity: sensor.0x00158d00048740a5_temperature
+        name: Varanda
+        color: '#e06c75'
+    - type: entities
+      title: Sensores por Ambiente
+      show_header_toggle: false
+      entities:
+      - entity: sensor.0xa4c13818e2a13578_temperature
+        name: Escritório (Temp)
+      - entity: sensor.0xa4c13818e2a13578_humidity
+        name: Escritório (Umidade)
+      - entity: sensor.0xa4c1388ad4a9a0b6_temperature
+        name: Suíte (Temp)
+      - entity: sensor.0xa4c1388ad4a9a0b6_humidity
+        name: Suíte (Umidade)
+      - entity: sensor.0xa4c138f397b856f0_temperature
+        name: Cozinha (Temp)
+      - entity: sensor.0x00158d00048740a5_temperature
+        name: Varanda (Temp)
+      - entity: sensor.0x00158d000244775f_temperature
+        name: Banheiro Social (Temp)
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-cameras'
+      name: Câmeras & Segurança
+      icon: mdi:shield-home
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: picture-entity
+      entity: camera.sala_fluent
+      name: Câmera Sala
+      camera_view: live
+    - type: entities
+      title: Segurança & Modos da Casa
+      show_header_toggle: false
+      entities:
+      - entity: lock.kuanttum_delta_pro_operate_lock
+        name: Fechadura Kuanttum
+      - entity: alarm_control_panel.home_alarm
+        name: Alarme
+      - entity: input_boolean.modo_visitas
+        name: Modo Visitas
+      - entity: input_boolean.faxina
+        name: Modo Faxina
+      - entity: input_boolean.vacation_mode
+        name: Modo Férias
+      - entity: input_boolean.sensor_movimento_banheiro_social
+        name: Sensor Banheiro Social
+  - type: vertical-stack
+    view_layout:
+      grid-area: popups
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: '#popup-updates'
+      name: Atualizações
+      icon: mdi:arrow-up-bold-circle-outline
+      bg_color: rgba(28, 32, 34, 0.94)
+      bg_opacity: 94
+      bg_blur: 20
+      shadow_opacity: 40
+      styles: "\n      .bubble-pop-up-container {\n        background: rgba(26, 30, 32, 0.94) !important;\n        backdrop-filter:\
+        \ blur(22px) !important;\n        -webkit-backdrop-filter: blur(22px) !important;\n        border: 1px solid rgba(255,\
+        \ 255, 255, 0.08) !important;\n      }\n      .bubble-header-container {\n        background: rgba(200, 218, 222,\
+        \ 0.05) !important;\n        border-bottom: 1px solid rgba(0, 0, 0, 0.28) !important;\n      }\n      ha-card {\n\
+        \        --ha-card-background: rgba(255, 255, 255, 0.04);\n        --ha-card-border-width: 0px;\n        --ha-card-border-radius:\
+        \ 14px;\n      }\n    "
+    - type: entities
+      title: Home Assistant
+      show_header_toggle: false
+      entities:
+      - entity: update.home_assistant_core_update
+        name: Core
+      - entity: update.home_assistant_supervisor_update
+        name: Supervisor
+      - entity: update.home_assistant_operating_system_update
+        name: Operating System
+      - entity: update.zigbee2mqtt_update
+        name: Zigbee2MQTT
+    - type: custom:auto-entities
+      card:
+        type: entities
+        title: Atualizações Disponíveis
+        show_header_toggle: false
+      filter:
+        include:
+        - domain: update
+          state: 'on'
+      sort:
+        method: friendly_name

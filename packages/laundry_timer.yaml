@@ -91,43 +91,43 @@ automation:
   - alias: laundry_display_on
     id: '5895522913207'
     mode: restart
-    trigger:
-      platform: calendar
+    triggers:
+      trigger: calendar
       event: start
       entity_id: calendar.tvatta
       offset: -00:01:00
-    action:
-      - service: input_boolean.turn_on
+    actions:
+      - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.laundry_display
 
   - alias: laundry_display_off
     id: '8028880075818'
     mode: restart
-    trigger:
-      platform: calendar
+    triggers:
+      trigger: calendar
       event: end
       entity_id: calendar.tvatta
-    action:
-      - service: input_boolean.turn_off
+    actions:
+      - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.laundry_display
 
   - alias: laundry_alert
     id: '3403466403120'
-    trigger:
-      platform: event
+    triggers:
+      trigger: event
       event_type: timer.finished
       event_data:
         entity_id: timer.laundry
-    action:
+    actions:
       - service: media_player.play_media
         target:
           entity_id: media_player.tablet
         data:
           media_content_id: /local/sound/timer.mp3
           media_content_type: music
-      - service: notify.all_devices
+      - action: notify.all_devices
         data:
           message: >
             {% set message = ['Tvätten är färdig', 'Tvätten är klar', 'Dags att gå ner'] %}
@@ -135,14 +135,14 @@ automation:
 
   - alias: laundry_notify_ios_shorcuts
     id: '2360411947125'
-    trigger:
-      platform: event
+    triggers:
+      trigger: event
       event_type: call_service
       event_data:
         domain: google
         service: create_event
-    action:
-      service: notify.mobile_app_iphone
+    actions:
+      action: notify.mobile_app_iphone
       data:
         title: Tvättid tillagd
         message: >
